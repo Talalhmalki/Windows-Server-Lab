@@ -1,154 +1,51 @@
-# 04 - Users and Groups
+# 04 - Users, Groups, and Domain Client
 
-## Overview
+## Purpose
 
-This phase focuses on building the enterprise identity structure inside Active Directory. User accounts, security groups, and computer objects were created and organized according to departmental roles and enterprise administration best practices.
+This phase implements a representative identity and client-management workflow in Active Directory: create IT user accounts, create department-based Global security groups, assign the IT users to their role group, join a Windows 11 client to the domain, and place the computer object in the correct OU.
 
----
+## Implemented objects
 
-# Objectives
+| Object type | Verified implementation |
+| --- | --- |
+| User accounts | Six representative IT accounts under `VIREXON\Users\IT`, with role descriptions and example contact attributes. |
+| Global security groups | `GG-IT-Users`, `GG-HR-Users`, `GG-Finance-Users`, `GG-Marketing-Users`, `GG-Sales-Users`, and `GG-Management-Users`. |
+| Group membership | The six IT accounts were added to `GG-IT-Users`. The screenshots verify creation, but not populated membership, for the other department groups. |
+| Client computer | `PC-IT-01`, running Windows 11 Pro 25H2, joined to `virexon.local`. |
+| Computer placement | `PC-IT-01` moved to `VIREXON\Computers\IT`. |
 
-- Create enterprise user accounts.
-- Configure user account properties.
-- Organize users by department.
-- Create Global Security Groups.
-- Assign users to the appropriate groups.
-- Join a Windows 11 client to the Active Directory domain.
-- Organize computer objects inside the correct Organizational Unit.
-- Verify successful domain membership.
+## Group design and AGDLP
 
----
+This phase implements the first two elements of the AGDLP model:
 
-# User Management
+1. **A — Accounts:** IT user accounts.
+2. **G — Global groups:** `GG-IT-Users` and the other department identity groups.
 
-Enterprise user accounts were created following a standardized naming convention. During creation, account settings and user attributes were configured to prepare the environment for centralized identity management.
+It does not, by itself, complete AGDLP. Domain Local resource groups and permissions—the **DL** and **P** elements—are implemented and validated in [Phase 08](../08-File-Server).
 
-### Screenshot 01
+## Evidence notes
 
-*New User Wizard*
+### Historical account-creation captures
 
-![01-New-User-Wizard](Screenshots/01-New-User-Wizard.png)
+[Screenshot 01](Screenshots/01-New-User-Wizard.png) and [Screenshot 02](Screenshots/02-User-Password-Configuration.png) show the New Object wizard opened while `VIREXON\Computers\IT` was selected. They are retained as historical workflow evidence, but they are not used to prove final user placement. [Screenshot 04](Screenshots/04-Users-Created-and-Organized.png) is the final-state evidence and shows the accounts under `VIREXON\Users\IT`.
 
----
+### Password-expiration exception
 
-Password policies were configured during account creation to ensure every user account followed the required security configuration.
+The captured account-creation example has **Password never expires** selected. That setting is documented here as a lab exception, not a production recommendation. It prevents the account from being governed by maximum-password-age expiration and should be explicitly reviewed or cleared when evaluating the password policy in [Phase 05](../05-Group-Policy). Microsoft documents the setting as the `DONT_EXPIRE_PASSWD` account-control flag: [UserAccountControl flags](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties).
 
-### Screenshot 02
+## Validation evidence
 
-*User Password Configuration*
+| Area | Evidence | What it verifies |
+| --- | --- | --- |
+| Account workflow | [01 - New User Wizard](Screenshots/01-New-User-Wizard.png), [02 - Password Configuration](Screenshots/02-User-Password-Configuration.png) | Historical creation workflow and captured account options; not final OU placement. |
+| Account attributes | [03 - User Properties](Screenshots/03-User-Properties-General.png) | Representative user description and contact attributes. |
+| Final user placement | [04 - Users Created and Organized](Screenshots/04-Users-Created-and-Organized.png) | Six accounts visible under `VIREXON\Users\IT`. |
+| Group creation | [05 - New Security Group Wizard](Screenshots/05-New-Security-Group-Wizard.png), [06 - Security Groups Created](Screenshots/06-Security-Groups-Created.png) | Global security-group type and six department group objects. |
+| Membership change | [07 - Before Membership](Screenshots/07-Group-Membership-Before-Adding-Users.png), [08 - Membership Configured](Screenshots/08-Group-Membership-Configured.png) | `GG-IT-Users` changed from empty to six IT members. |
+| Client identity | [09 - Computer Information](Screenshots/09-Computer-Information.png) | `PC-IT-01`, Windows 11 Pro 25H2, and the `virexon.local` FQDN. |
+| AD computer placement | [10 - Computer Moved to IT OU](Screenshots/10-Computer-Moved-To-IT-OU.png) | Computer object located under `VIREXON\Computers\IT`. |
+| Domain membership | [11 - Computer Domain Membership](Screenshots/11-Computer-Domain-Membership.png) | Client reports membership in `virexon.local`. |
 
-![02-User-Password-Configuration](Screenshots/02-User-Password-Configuration.png)
+## Outcome
 
----
-
-Additional user information such as department and job title was configured to improve administration and future Group Policy targeting.
-
-### Screenshot 03
-
-*User Properties*
-
-![03-User-Properties-General](Screenshots/03-User-Properties-General.png)
-
----
-
-After completing user creation, all enterprise users were organized inside their corresponding Organizational Units.
-
-### Screenshot 04
-
-*Users Created and Organized*
-
-![04-Users-Created-and-Organized](Screenshots/04-Users-Created-and-Organized.png)
-
----
-
-# Security Groups
-
-Department-based Global Security Groups were created following Microsoft's AGDLP administration model.
-
-### Screenshot 05
-
-*New Security Group Wizard*
-
-![05-New-Security-Group-Wizard](Screenshots/05-New-Security-Group-Wizard.png)
-
----
-
-All required departmental security groups were successfully created.
-
-### Screenshot 06
-
-*Security Groups Created*
-
-![06-Security-Groups-Created](Screenshots/06-Security-Groups-Created.png)
-
----
-
-Before assigning users, group membership was verified to confirm that the newly created groups contained no members.
-
-### Screenshot 07
-
-*Group Membership Before Adding Users*
-
-![07-Group-Membership-Before-Adding-Users](Screenshots/07-Group-Membership-Before-Adding-Users.png)
-
----
-
-Users were then assigned to the appropriate departmental security groups based on their organizational roles.
-
-### Screenshot 08
-
-*Group Membership Configured*
-
-![08-Group-Membership-Configured](Screenshots/08-Group-Membership-Configured.png)
-
----
-
-# Computer Management
-
-A Windows 11 Enterprise client was integrated into the Active Directory environment.
-
-The workstation was prepared, joined to the domain, and verified before being organized inside the enterprise OU structure.
-
-### Screenshot 09
-
-*Computer Information*
-
-![09-Computer-Information](Screenshots/09-Computer-Information.png)
-
----
-
-After joining the domain, the computer object was moved from the default *Computers* container into the dedicated *IT Computers OU*.
-
-### Screenshot 10
-
-*Computer Moved to IT OU*
-
-![10-Computer-Moved-To-IT-OU](Screenshots/10-Computer-Moved-To-IT-OU.png)
-
----
-
-Finally, domain membership was verified from the client workstation to confirm successful integration with Active Directory.
-
-### Screenshot 11
-
-*Computer Domain Membership*
-
-![11-Computer-Domain-Membership](Screenshots/11-Computer-Domain-Membership.png)
-
----
-
-# Best Practices Applied
-
-- Standardized naming convention
-- Department-based Organizational Units
-- Department-based Security Groups
-- Enterprise user account structure
-- Computer object organization
-- Active Directory logical hierarchy
-- Preparation for Group Policy deployment
-
----
-
-# Result
-
-The enterprise Active Directory environment now contains properly organized users, security groups, and managed computer objects. This structure provides the required foundation for centralized authentication, authorization, Group Policy deployment, and future enterprise infrastructure services.
+The lab now has verified IT identities, reusable department Global groups, and a managed Windows client in the intended computer OU. This provides the identity and targeting foundation used by Group Policy in [Phase 05](../05-Group-Policy) and resource authorization in [Phase 08](../08-File-Server).

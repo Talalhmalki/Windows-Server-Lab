@@ -1,102 +1,51 @@
-# 03 - Organizational Units
+# 03 - Organizational Unit Design
 
-## Overview
+## Purpose
 
-This section documents the Organizational Unit (OU) design implemented in the **VIREXON.LOCAL** Active Directory environment.
+This phase creates an administrative structure for users, computers, servers, groups, and service accounts in `virexon.local`. The hierarchy is designed to make object placement and Group Policy scope explicit without adding unnecessary OU depth.
 
-The OU hierarchy follows an enterprise-grade administrative model that separates users, computers, servers, security groups, and service accounts by department. This structure simplifies administration, supports delegated management, streamlines Group Policy deployment, and provides a scalable foundation for future infrastructure growth.
+## Implemented hierarchy
 
----
+The custom hierarchy begins with the `VIREXON` root OU beneath the domain:
 
-## OU Hierarchy
+| Parent path | Direct child OUs |
+| --- | --- |
+| `virexon.local` | `VIREXON` |
+| `VIREXON` | `Users`, `Computers`, `Servers`, `Groups`, `Service Accounts` |
+| `VIREXON\Users` | `IT`, `HR`, `Finance`, `Sales`, `Management`, `Marketing` |
+| `VIREXON\Computers` | `IT`, `HR`, `Finance`, `Sales`, `Management`, `Marketing` |
 
-```text
-VIREXON.LOCAL
-│
-├── Users
-│   ├── IT
-│   ├── HR
-│   ├── Finance
-│   ├── Sales
-│   ├── Management
-│   └── Marketing
-│
-├── Computers
-│   ├── IT
-│   ├── HR
-│   ├── Finance
-│   ├── Sales
-│   ├── Management
-│   └── Marketing
-│
-├── Servers
-├── Groups
-└── Service Accounts
-```
+## OU responsibilities
 
----
+| OU | Administrative purpose |
+| --- | --- |
+| `Users` | Contains departmental user OUs and provides a clear scope for user-side policies. |
+| `Computers` | Contains departmental workstation OUs and separates computer-side policy targeting from user policy. |
+| `Servers` | Keeps member-server objects outside workstation policy scope. |
+| `Groups` | Centralizes security-group administration; permissions are assigned through groups in later phases. |
+| `Service Accounts` | Separates non-human identities for distinct administration and lifecycle controls. |
 
-## Organizational Unit Purpose
+## Design decisions
 
-| Organizational Unit | Purpose |
-|---------------------|---------|
-| **Users/\*** | Stores departmental user accounts for administration, delegated management, and User Configuration Group Policy assignment. |
-| **Computers/\*** | Stores departmental workstation computer objects, allowing Computer Configuration policies to be managed independently from user accounts. |
-| **Servers** | Contains member servers isolated from workstation policies for dedicated server administration and security hardening. |
-| **Groups** | Stores security groups used for permission management following the AGDLP model. |
-| **Service Accounts** | Stores service accounts separately from standard users to improve security and simplify administration. |
+- The `VIREXON` root OU separates lab-managed objects from the domain's built-in containers.
+- Matching department names under `Users` and `Computers` make policy targets predictable while keeping user and computer settings independent.
+- The hierarchy is based on administrative and Group Policy requirements, not on an assumption that an OU alone grants access to resources.
+- Resource authorization remains group-based; the complete AGDLP permission flow is implemented in [Phase 08](../08-File-Server).
+- New OUs should be added only when they support a real delegation, policy, or object-management requirement.
 
----
+## Validation evidence
 
-## Design Principles
+| Evidence | What it verifies |
+| --- | --- |
+| [01 - Root Organizational Unit](Screenshots/01-Root-Organizational-Unit.png) | Creation of the `VIREXON` root OU. |
+| [02 - Top-Level Organizational Units](Screenshots/02-Top-Level-Organizational-Units.png) | `Users`, `Computers`, `Servers`, `Groups`, and `Service Accounts` under `VIREXON`. |
+| [03 - Users Department Structure](Screenshots/03-Users-Department-Structure.png) | Six departmental OUs under `VIREXON\Users`. |
+| [04 - Computers Department Structure](Screenshots/04-Computers-Department-Structure.png) | Six departmental OUs under `VIREXON\Computers`. |
 
-- Separate user accounts from computer objects.
-- Use identical departmental structures for both **Users** and **Computers**.
-- Isolate servers from workstation administration.
-- Store security groups in a dedicated Organizational Unit.
-- Separate service accounts from standard user accounts.
-- Prepare the environment for scalable Group Policy deployment.
-- Keep the OU hierarchy simple, consistent, and easy to expand.
+## Reference
 
----
+The design follows Microsoft's principle of using OUs to organize objects for administration, delegation, and Group Policy application: [Reviewing OU design concepts](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/reviewing-ou-design-concepts).
 
-## Naming Convention
+## Outcome
 
-- Department names use standard English naming:
-  - IT
-  - HR
-  - Finance
-  - Sales
-  - Management
-  - Marketing
-- Top-level Organizational Units each have a single administrative purpose.
-- The OU hierarchy is designed for long-term scalability, consistency, and maintainability.
-
----
-
-## Benefits
-
-- Improved administrative organization.
-- Simplified Group Policy management.
-- Clear separation of users, computers, servers, groups, and service accounts.
-- Better scalability for future departments and infrastructure growth.
-- Enterprise-ready Active Directory design aligned with Microsoft best practices.
-
----
-
-## Screenshots
-
-The *Screenshots* folder contains:
-
-- 01-Root-Organizational-Unit.png
-- 02-Top-Level-Organizational-Units.png
-- 03-Users-Department-Structure.png
-- 04-Computers-Department-Structure.png
-
----
-
-## Status
-
-Completed
-
-
+The verified OU structure provides consistent placement targets for the identities and client computer created in [Phase 04](../04-Users-and-Groups) and the GPO links documented in [Phase 05](../05-Group-Policy).
