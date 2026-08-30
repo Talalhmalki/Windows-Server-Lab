@@ -1,330 +1,94 @@
 # 10 - Shadow Copies
 
-## Overview
+## Purpose
 
-This section documents the implementation and verification of **Shadow Copies** on the VIREXON file server.
+This phase implements and validates Shadow Copies for the departmental file server. The objective is to give users a fast, client-accessible way to inspect and restore an earlier folder state without starting a full backup recovery.
 
-The objective was to provide a fast recovery method for departmental shared data by allowing users to access and restore previous versions of files and folders without requiring a full backup restoration.
-
-Shadow Copies were configured on the volume hosting the company data and were tested directly from the Windows 11 domain client.
-
-The implementation followed this workflow:
-
-**Configure → Schedule → Create Shadow Copy → Modify Data → Access Previous Version → Restore → Verify**
-
----
-
-## Environment
+## Verified environment
 
 | Component | Configuration |
-|---|---|
-| Domain | `VIREXON.LOCAL` |
+| --- | --- |
 | Server | `PC26.virexon.local` |
-| Server IP | `192.168.1.2` |
-| Server OS | Windows Server 2022 |
+| Server operating system | Windows Server 2025 Standard Evaluation |
+| Server IP address | `192.168.1.2` |
 | Client | `PC-IT-01` |
-| Client OS | Windows 11 |
-| Company Data Volume | `F:` |
-| Company Data Path | `F:\CompanyData\Departments` |
-| Department Share | `\\PC26\Departments` |
-| Mapped Drive | `S:` |
-| Shadow Copy Storage Volume | `G:` |
+| Client operating system | Windows 11 |
+| Protected volume | `F:` |
+| Department data | `F:\CompanyData\Departments` |
+| Network share | `\\PC26\Departments` |
+| Client drive used for testing | `S:` |
+| Shadow Copy storage volume | `G:` |
 
----
+Shadow Copies complement the authorization and storage-governance controls established in Phases 08 and 09. They do not replace an independent backup.
 
-## Business Requirement
+## Recovery design
 
-The departmental file server contains shared company data that may be modified, renamed, or deleted by users during normal daily work.
-
-The requirement was to provide a quick recovery method that allows previous versions of shared files and folders to be accessed without performing a full server backup restore.
-
-Shadow Copies were therefore implemented for the volume hosting the departmental data.
-
----
-
-## Shadow Copy Storage Configuration
-
-The company departmental data is stored on:
+The implementation protects `F:` at the volume level because Shadow Copies are not configured for an individual folder. The storage area for those snapshots is `G:`, with a configured maximum of `39,936 MB`.
 
 ```text
-F:\CompanyData\Departments
+F:  Department data and protected volume
+G:  Shadow Copy storage for F:
 ```
 
-Because Shadow Copies are configured at the **volume level**, the protected volume is:
+Although `F:` and `G:` are separate volumes, both reside on the same underlying virtual disk in this lab. This arrangement separates allocation but does not protect against loss of that virtual disk or its host.
 
-```text
-F:
-```
+## Schedule
 
-A separate volume was created for Shadow Copy storage:
+Two recovery points were scheduled on each working day:
 
-```text
-G:
-```
+| Days | First recovery point | Second recovery point |
+| --- | ---: | ---: |
+| Sunday through Thursday | `7:00 AM` | `12:00 PM` |
 
-The final storage design was:
+Friday and Saturday are not included in the captured schedule.
 
-```text
-F:  → Company Data
-G:  → Shadow Copy Storage for F:
-```
+## Server-side validation
 
-The Shadow Copy settings for `F:` were configured to use `G:` as the storage area.
+After the configuration was completed, a recovery point was created for controlled testing. The captured Shadow Copies console shows:
 
-The configured maximum storage size was:
+| Observation | Verified value |
+| --- | --- |
+| Protected volume | `F:` |
+| Recovery-point timestamp | `8/18/2026 8:58 PM` |
+| Storage location | `G:` |
+| Storage in use at capture time | Approximately `1.88 GB` |
 
-```text
-39,936 MB
-```
+These observations verify that a recovery point existed and that `G:` was being used as configured.
 
-This keeps Shadow Copy storage separate from the main `F:` data volume.
+## Client recovery test
 
-> `F:` and `G:` are located on the same underlying virtual disk, so this configuration provides storage separation but does not replace a proper backup solution.
+The recovery workflow was validated from `PC-IT-01` against the IT department folder on `S:`.
 
-### Storage Configuration Evidence
+| State | Visible content |
+| --- | --- |
+| Earlier folder state | `VIREXON 1` |
+| Current folder state before restoration | `VIREXON 2` |
 
-![Shadow Copies Storage Configuration](Screenshots/01-Shadow-Copies-Storage-Configuration.png)
+The Previous Versions interface exposed the `8/18/2026 8:58 PM` recovery point. Opening it showed `VIREXON 1` while the live folder showed `VIREXON 2`, confirming that the two states were distinct.
 
----
+The earlier folder version was then restored. Windows reported that the folder had been successfully restored, and `VIREXON 1` was visible again in the live location.
 
-## Shadow Copy Schedule
+## Evidence index
 
-A scheduled recovery design was configured based on the working week used in the lab environment.
+| # | Evidence | What it proves |
+| ---: | --- | --- |
+| 01 | [Storage Configuration](Screenshots/01-Shadow-Copies-Storage-Configuration.png) | `F:` is protected, `G:` is the storage area, and the maximum allocation is `39,936 MB`. |
+| 02 | [Schedule Configuration](Screenshots/02-Shadow-Copies-Schedule-Configuration.png) | Recovery points are scheduled at `7:00 AM` and `12:00 PM` from Sunday through Thursday. |
+| 03 | [Recovery-Point Verification](Screenshots/03-Shadow-Copy-Creation-Verification.png) | The `8/18/2026 8:58 PM` recovery point exists and storage is in use on `G:`. |
+| 04 | [Client Previous Versions](Screenshots/04-Previous-Versions-Client-Verification.png) | The recovery point is available to the Windows client through Previous Versions. |
+| 05 | [Content Comparison](Screenshots/05-Previous-Version-Content-Verification.png) | The earlier `VIREXON 1` state differs from the current `VIREXON 2` state. |
+| 06 | [Restore Verification](Screenshots/06-Previous-Version-Restore-Verification.png) | Windows reports a successful restore and the earlier content is present again. |
 
-Shadow Copies are scheduled on:
+## Operational considerations
 
-- Sunday
-- Monday
-- Tuesday
-- Wednesday
-- Thursday
+- Shadow Copies provide rapid recovery from common file and folder changes.
+- Storage consumption and retention depend on change rate and the configured maximum allocation.
+- Older recovery points can be removed as the storage area fills.
+- Client-accessible Previous Versions reduce routine restore effort, but access remains subject to the existing SMB and NTFS permissions.
+- Because `F:` and `G:` share one underlying virtual disk, Windows Server Backup in Phase 11 supplies the separate recovery layer.
 
-Two Shadow Copies are scheduled during each working day:
+## Outcome
 
-| Time | Days |
-|---|---|
-| `7:00 AM` | Sunday - Thursday |
-| `12:00 PM` | Sunday - Thursday |
-
-Friday and Saturday are excluded from the schedule.
-
-This provides two recovery points during each normal working day.
-
-### Schedule Configuration Evidence
-
-![Shadow Copies Schedule Configuration](Screenshots/02-Shadow-Copies-Schedule-Configuration.png)
-
----
-
-## Shadow Copy Creation
-
-After completing the storage and schedule configuration, Shadow Copies were enabled on:
-
-```text
-F:
-```
-
-A manual Shadow Copy was then created to perform a controlled recovery test.
-
-The created recovery point appeared with the timestamp:
-
-```text
-8/18/2026 8:58 PM
-```
-
-The server also showed Shadow Copy storage being used on:
-
-```text
-G:
-```
-
-with approximately:
-
-```text
-1.88 GB
-```
-
-in use during the verification.
-
-This confirmed that the Shadow Copy was successfully created and that `G:` was being used as the configured storage location.
-
-### Shadow Copy Creation Evidence
-
-![Shadow Copy Creation Verification](Screenshots/03-Shadow-Copy-Creation-Verification.png)
-
----
-
-## Client Recovery Test
-
-The recovery test was performed from the domain client:
-
-```text
-PC-IT-01
-```
-
-The test location was the IT departmental folder through the mapped drive:
-
-```text
-S:\IT
-```
-
-Before the Shadow Copy was created, the test file existed as:
-
-```text
-VIREXON 1
-```
-
-After the Shadow Copy was created, the live file was modified and renamed to:
-
-```text
-VIREXON 2
-```
-
-This created a visible difference between the current data and the data stored inside the Shadow Copy.
-
----
-
-## Previous Versions Verification
-
-From `PC-IT-01`, the **Previous Versions** tab was opened for the `IT` departmental folder.
-
-A previous version was displayed with the timestamp:
-
-```text
-8/18/2026 8:58 PM
-```
-
-This matched the Shadow Copy that had been manually created on the server.
-
-This confirmed that the recovery point created on `PC26` was available from the client through the shared departmental folder.
-
-### Client Verification Evidence
-
-![Previous Versions Client Verification](Screenshots/04-Previous-Versions-Client-Verification.png)
-
----
-
-## Previous Version Content Verification
-
-Before restoring the previous version, it was opened to verify its contents.
-
-The current `IT` folder contained:
-
-```text
-VIREXON 2
-```
-
-The previous version of the same folder contained:
-
-```text
-VIREXON 1
-```
-
-This confirmed that the Shadow Copy preserved the earlier state of the departmental folder before the file was modified and renamed.
-
-The previous version was inspected before restoration to ensure that the correct recovery point had been selected.
-
-### Previous Version Content Evidence
-
-![Previous Version Content Verification](Screenshots/05-Previous-Version-Content-Verification.png)
-
----
-
-## Previous Version Restore
-
-The previous version of the `IT` folder was restored from `PC-IT-01`.
-
-Windows confirmed the restore operation with the message:
-
-```text
-The folder has been successfully restored to the previous version.
-```
-
-After the restore completed, the earlier file:
-
-```text
-VIREXON 1
-```
-
-was visible again in the current departmental folder.
-
-This confirmed that the Previous Versions recovery process worked successfully from the Windows 11 client.
-
-### Restore Verification Evidence
-
-![Previous Version Restore Verification](Screenshots/06-Previous-Version-Restore-Verification.png)
-
----
-
-## Verification Summary
-
-| Test | Result |
-|---|---|
-| Correct company data volume identified as `F:` | ✅ Passed |
-| Shadow Copy storage configured on `G:` | ✅ Passed |
-| Maximum Shadow Copy storage configured | ✅ Passed |
-| Sunday - Thursday schedule configured | ✅ Passed |
-| 7:00 AM schedule configured | ✅ Passed |
-| 12:00 PM schedule configured | ✅ Passed |
-| Shadow Copies enabled on `F:` | ✅ Passed |
-| Manual Shadow Copy created successfully | ✅ Passed |
-| Shadow Copy storage used on `G:` | ✅ Passed |
-| Previous Version visible from `PC-IT-01` | ✅ Passed |
-| Previous folder contents accessible | ✅ Passed |
-| Earlier file state visible | ✅ Passed |
-| Previous Version restored successfully | ✅ Passed |
-| Restored file visible in the live folder | ✅ Passed |
-
----
-
-## Screenshot Documentation
-
-| # | Screenshot | Evidence |
-|---|---|---|
-| 01 | `01-Shadow-Copies-Storage-Configuration.png` | Shows `F:` using `G:` as the Shadow Copy storage volume |
-| 02 | `02-Shadow-Copies-Schedule-Configuration.png` | Shows the two scheduled recovery points for Sunday - Thursday |
-| 03 | `03-Shadow-Copy-Creation-Verification.png` | Confirms successful Shadow Copy creation and storage usage on `G:` |
-| 04 | `04-Previous-Versions-Client-Verification.png` | Confirms that the previous version is visible from `PC-IT-01` |
-| 05 | `05-Previous-Version-Content-Verification.png` | Shows the difference between the live folder and the previous folder state |
-| 06 | `06-Previous-Version-Restore-Verification.png` | Confirms successful restoration of the previous folder version |
-
----
-
-## Key Takeaways
-
-The Shadow Copies implementation demonstrated the following practical Windows Server concepts:
-
-- Shadow Copies are configured at the **volume level**.
-- `F:` is the protected company data volume.
-- `G:` is used as the Shadow Copy storage volume.
-- Recovery points can be created automatically through a schedule.
-- Recovery points can also be created manually for testing or administrative purposes.
-- Previous Versions can be accessed directly from a Windows client.
-- Previous folder states can be inspected before performing a restore.
-- Files that have been renamed or changed can be recovered from an earlier folder version.
-- Shadow Copies provide fast recovery from common user mistakes.
-- Shadow Copies are **not a replacement for backup**.
-
----
-
-## Conclusion
-
-Shadow Copies were successfully configured and verified for the departmental file server.
-
-The company data volume `F:` was configured as the protected volume, while the dedicated `G:` volume was used for Shadow Copy storage.
-
-Two scheduled recovery points were configured for every working day from Sunday through Thursday at `7:00 AM` and `12:00 PM`.
-
-A manual Shadow Copy was created and successfully detected from the Windows 11 client through **Previous Versions**.
-
-The recovery test confirmed that the client could:
-
-1. Detect the previous version.
-2. Open the previous folder state.
-3. View the earlier `VIREXON 1` file.
-4. Restore the previous version.
-5. Verify that the earlier file was available again after restoration.
-
-This implementation provides the VIREXON file server with a practical and efficient method for recovering previous versions of shared departmental data.
+Shadow Copies are enabled for the departmental data volume, stored on `G:`, and scheduled twice per working day. The server-side recovery point, client-visible previous version, content difference, and successful restoration are all represented in the captured evidence.
 
 **10 - Shadow Copies — Completed ✅**
