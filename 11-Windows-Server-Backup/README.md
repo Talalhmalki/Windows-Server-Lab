@@ -1,163 +1,434 @@
 # 11 - Windows Server Backup
 
-## Purpose
+## Overview
 
-This phase implements and validates Windows Server Backup (WSB) for the departmental file server. It adds a recovery layer stored on a separate virtual disk, verifies a completed backup, and confirms file-level recovery through the WSB Recovery Wizard.
+This section documents the implementation, configuration, backup validation, and recovery testing of **Windows Server Backup (WSB)** within the `VIREXON.LOCAL` Windows Server environment.
 
-## Verified environment
+The objective was to protect the company File Server data using a backup solution stored on a separate virtual disk from the production data and Shadow Copies storage.
+
+The implementation followed this workflow:
+
+**Design → Configure → Schedule → Backup → Verify → Simulate Data Loss → Recover → Validate**
+
+---
+
+## Environment
 
 | Component | Configuration |
-| --- | --- |
-| Server | `PC26` |
-| Server operating system | Windows Server 2025 Standard Evaluation |
-| Protected data | `F:\CompanyData\Departments` |
-| Network presentation of the data | `\\PC26\Departments` |
-| Shadow Copy storage | `G:` |
-| Backup feature | Windows Server Backup |
-| Backup destination | Dedicated 60 GB virtual disk |
+|---|---|
+| Domain | `VIREXON.LOCAL` |
+| Server | `PC26.virexon.local` |
+| Server IP | `192.168.1.2` |
+| Operating System | Windows Server 2025 Standard Evaluation |
+| File Server Data | `F:\CompanyData\Departments` |
+| Shadow Copies Storage | `G:` |
+| Backup Solution | Windows Server Backup |
+| Backup Destination | Dedicated 60 GB Virtual Disk |
 | Hypervisor | VMware Workstation Pro |
-| Lab network | Host-only |
+| Network | Host-Only |
 
-WSB protects the local data path, not the SMB path through which clients consume the same data.
+---
 
-## Protection architecture
+## Business Requirement
+
+The company requires a backup solution for the departmental File Server data located at:
+
+`F:\CompanyData\Departments`
+
+The solution must:
+
+- Protect the company File Server data independently from Shadow Copies.
+- Store backups on a separate virtual disk from the production data disk.
+- Run automatically according to a defined backup schedule.
+- Allow files and folders to be recovered after accidental deletion or data loss.
+- Be validated through an actual recovery test rather than relying only on a successful backup status.
+
+The final design therefore separates production data, Shadow Copies, and Windows Server Backup storage.
+
+---
+
+## Backup Architecture
+
+The storage design used in this lab is:
 
 ```text
 PC26
-├── System virtual disk
-│   └── C:  Windows Server
-├── Data virtual disk
-│   ├── F:  Department data
-│   └── G:  Shadow Copy storage
-└── Dedicated 60 GB virtual disk
-    └── Windows Server Backup destination
+│
+├── System Virtual Disk
+│   └── C: Windows Server
+│
+├── Data Virtual Disk
+│   ├── F: Company Data
+│   └── G: Shadow Copies
+│
+└── Dedicated Backup Virtual Disk
+    └── 60 GB Windows Server Backup Storage
 ```
 
-The dedicated destination is separate from the virtual disk that contains `F:` and `G:`. This improves recovery isolation within the lab, but it is still attached to the same virtual machine and hosted on the same VMware infrastructure. It is not an off-host or offsite backup.
+The dedicated backup disk is a separate VMware virtual disk from the virtual disk containing the production File Server data and Shadow Copies.
 
-## Backup preparation
+This provides separation between:
 
-### Dedicated destination
+- Production data
+- Shadow Copies
+- Windows Server Backup storage
 
-A new 60 GB virtual disk was added for WSB. The initial disk view shows it as a separate, unallocated disk rather than another partition on the production data disk. WSB later selected that disk as its dedicated destination.
+> **Important:** The backup destination is a separate virtual disk within the lab environment, but it still resides within the same virtual machine and underlying VMware host infrastructure. It is therefore not an off-host or offsite backup and would not protect against complete VMware host or underlying physical storage failure.
 
-### Feature installation
+---
 
-The Windows Server Backup feature and its management tools were installed successfully on `PC26`.
+## 1. Dedicated Backup Disk
 
-## Backup configuration
+A new **60 GB virtual disk** was added to the `PC26` virtual machine specifically for Windows Server Backup.
 
-| Setting | Verified configuration |
-| --- | --- |
-| Backup scope | `F:\CompanyData\Departments` |
-| Destination | Dedicated 60 GB virtual disk |
-| Schedule | Daily at `12:00 AM` and `12:00 PM` |
-| Approximate interval | 12 hours |
-| Excluded files | None shown |
-| VSS option | VSS Copy Backup |
+The disk was kept separate from the virtual disk containing:
 
-Limiting the selection to the department root aligns the backup scope with the documented business data rather than expanding it to the entire server.
+- `F:` — Company File Server data
+- `G:` — Shadow Copies storage
 
-## Backup verification
+The new disk was prepared as a dedicated backup destination rather than creating another partition on the existing production data disk.
 
-The WSB console records a successful backup with the following visible details:
+### Evidence
 
-| Observation | Captured value |
-| --- | --- |
-| Completion time | `12:34 AM` |
-| Status | Successful |
-| Copies available | 1 |
-| Next scheduled backup | `12:00 PM` |
-| Destination capacity shown | `59.86 GB` |
-| VSS setting | VSS Copy Backup |
+![Dedicated Backup Disk](Screenshots/01-WSB-Dedicated-Backup-Disk.png)
 
-The completion capture verifies that WSB produced a usable backup and retained the twice-daily schedule. It does not identify whether that specific run was initiated by the schedule or by an administrator, so no trigger method is asserted here.
+---
 
-## Recovery validation
+## 2. Windows Server Backup Installation
 
-The WSB Recovery Wizard was used to browse the stored department hierarchy and select `Test Folder`, which contained two test files. The recovery operation then reached `Completed` status, with both files represented in the recovery result.
+The **Windows Server Backup** feature was installed successfully on `PC26`.
 
-This verifies two separate requirements:
+Windows Server Backup provides built-in backup and recovery functionality within Windows Server.
 
-1. The selected department data was present in the backup catalog.
-2. WSB could process the selected data through file-level recovery.
+For this implementation, its primary purpose is to protect the company departmental File Server data.
 
-The screenshots demonstrate successful selection and recovery. They do not independently document every preparation step of the test scenario, so the validation claim is intentionally limited to the captured evidence.
+### Evidence
 
-## Recovery-layer comparison
+![Windows Server Backup Feature Installation](Screenshots/02-WSB-Feature-Installation-Verification.png)
 
-| Characteristic | Shadow Copies | Windows Server Backup |
-| --- | --- | --- |
-| Primary use | Fast previous-version access | Backup-based recovery |
-| Protected scope in this lab | `F:` volume snapshots | `F:\CompanyData\Departments` |
-| Storage | `G:` | Dedicated 60 GB virtual disk |
-| Underlying-disk separation from `F:` | No | Yes |
-| Client Previous Versions integration | Yes | No |
-| Recovery interface | Previous Versions | WSB Recovery Wizard |
-| Recovery validated | Yes | Yes |
+---
 
-The two mechanisms are complementary. Shadow Copies optimize routine version recovery; WSB provides a separate backup repository and recovery workflow.
+## 3. Backup Scope Configuration
 
-## Evidence index
+The backup scope was intentionally limited to the company departmental data rather than backing up the entire server.
 
-| # | Evidence | What it proves |
-| ---: | --- | --- |
-| 01 | [Dedicated Backup Disk](Screenshots/01-WSB-Dedicated-Backup-Disk.png) | A separate 60 GB virtual disk is available for backup use. |
-| 02 | [Feature Installation](Screenshots/02-WSB-Feature-Installation-Verification.png) | Windows Server Backup and its management tools installed successfully. |
-| 03 | [Backup Scope](Screenshots/03-Backup-Scope-Configuration.png) | `F:\CompanyData\Departments` is the selected backup content. |
-| 04 | [Backup Schedule](Screenshots/04-Backup-Schedule-Configuration.png) | Daily runs are configured for `12:00 AM` and `12:00 PM`. |
-| 05 | [Backup Destination](Screenshots/05-Backup-Destination-Configuration.png) | The separate 60 GB disk is selected as the WSB destination. |
-| 06 | [Backup Completion](Screenshots/06-Backup-Completion-Verification.png) | A backup completed successfully and the next scheduled time is visible. |
-| 07 | [Recovery Selection](Screenshots/07-File-Recovery-Configuration.png) | `Test Folder` and its two files are available for selection in the backup. |
-| 08 | [Recovery Completion](Screenshots/08-File-Recovery-Verification.png) | The selected file-level recovery completed successfully. |
+### Protected Data
 
-## Operational considerations
+`F:\CompanyData\Departments`
 
-- A successful backup status should be paired with periodic recovery testing.
-- The twice-daily schedule limits the nominal interval between backup opportunities; it does not guarantee a recovery point unless a run completes successfully.
-- Capacity, backup age, and job results should be monitored as the protected data grows.
-- The dedicated virtual disk is a stronger boundary than the Shadow Copy arrangement, but host or datastore failure could still affect both production and backup disks.
-- A production design should add off-host or offsite copies, retention requirements, encryption, monitoring, and documented recovery objectives.
+This path contains the departmental File Server structure used throughout the lab.
 
+Although users access the data through the network share:
 
-## Screenshot evidence
+`\\PC26\Departments`
 
-The screenshots below follow the documented evidence order. Each image links to its original file.
+the actual data is stored locally on `PC26` under:
 
-### 01 - Dedicated Backup Disk
+`F:\CompanyData\Departments`
 
-[![01 - Dedicated Backup Disk](Screenshots/01-WSB-Dedicated-Backup-Disk.png)](Screenshots/01-WSB-Dedicated-Backup-Disk.png)
+Windows Server Backup therefore protects the underlying local File Server data rather than the SMB share path itself.
 
-### 02 - Feature Installation
+### Evidence
 
-[![02 - Feature Installation](Screenshots/02-WSB-Feature-Installation-Verification.png)](Screenshots/02-WSB-Feature-Installation-Verification.png)
+![Backup Scope Configuration](Screenshots/03-Backup-Scope-Configuration.png)
 
-### 03 - Backup Scope
+---
 
-[![03 - Backup Scope](Screenshots/03-Backup-Scope-Configuration.png)](Screenshots/03-Backup-Scope-Configuration.png)
+## 4. Backup Schedule Configuration
 
-### 04 - Backup Schedule
+A recurring backup schedule was configured to run twice every day.
 
-[![04 - Backup Schedule](Screenshots/04-Backup-Schedule-Configuration.png)](Screenshots/04-Backup-Schedule-Configuration.png)
+### Schedule
 
-### 05 - Backup Destination
+| Backup | Time |
+|---|---|
+| Backup 1 | `12:00 AM` |
+| Backup 2 | `12:00 PM` |
 
-[![05 - Backup Destination](Screenshots/05-Backup-Destination-Configuration.png)](Screenshots/05-Backup-Destination-Configuration.png)
+This creates a scheduled backup interval of approximately **12 hours**.
 
-### 06 - Backup Completion
+The schedule was selected to provide two backup opportunities per day rather than relying on a single daily backup.
 
-[![06 - Backup Completion](Screenshots/06-Backup-Completion-Verification.png)](Screenshots/06-Backup-Completion-Verification.png)
+The schedule was configured successfully. The retained completion screenshot verifies a successful backup and displays the next scheduled time; it does not identify whether that specific successful run was manually triggered or started by the schedule.
 
-### 07 - Recovery Selection
+### Evidence
 
-[![07 - Recovery Selection](Screenshots/07-File-Recovery-Configuration.png)](Screenshots/07-File-Recovery-Configuration.png)
+![Backup Schedule Configuration](Screenshots/04-Backup-Schedule-Configuration.png)
 
-### 08 - Recovery Completion
+---
 
-[![08 - Recovery Completion](Screenshots/08-File-Recovery-Verification.png)](Screenshots/08-File-Recovery-Verification.png)
+## 5. Backup Destination Configuration
 
-## Outcome
+The dedicated **60 GB virtual disk** was selected as the Windows Server Backup destination.
 
-Windows Server Backup protects the departmental data on a dedicated 60 GB virtual disk, with daily runs scheduled at midnight and noon. The evidence confirms the configured scope and destination, a successful backup, recoverable test content, and a completed file-level recovery.
+The backup destination is separate from:
+
+- `C:` — Windows Server operating system
+- `F:` — Production File Server data
+- `G:` — Shadow Copies storage
+
+This prevents the Windows Server Backup repository from sharing the same virtual disk as the production File Server data.
+
+### Evidence
+
+![Backup Destination Configuration](Screenshots/05-Backup-Destination-Configuration.png)
+
+---
+
+## Backup Configuration Summary
+
+| Setting | Configuration |
+|---|---|
+| Backup Source | `F:\CompanyData\Departments` |
+| Backup Destination | Dedicated 60 GB Virtual Disk |
+| Backup Frequency | Twice Daily |
+| Backup Time 1 | `12:00 AM` |
+| Backup Time 2 | `12:00 PM` |
+| Files Excluded | None |
+| VSS Setting | VSS Copy Backup |
+
+---
+
+## 6. Backup Execution and Verification
+
+After the recurring schedule was configured, Windows Server Backup recorded a successful backup operation.
+
+Windows Server Backup reported the operation as:
+
+**Successful**
+
+This verified that:
+
+- The selected File Server data could be backed up.
+- The dedicated backup destination was operational.
+- Windows Server Backup could successfully complete a backup operation.
+- The protected data was available for subsequent recovery testing.
+
+The schedule remained configured for:
+
+- `12:00 AM`
+- `12:00 PM`
+
+The screenshot proves successful completion and the next scheduled time, but it does not expose the trigger method for that completed run.
+
+### Evidence
+
+![Backup Completion Verification](Screenshots/06-Backup-Completion-Verification.png)
+
+---
+
+## 7. Recovery Test Scenario
+
+A backup solution should not be considered validated only because a backup operation reports success.
+
+A practical recovery test was therefore performed.
+
+A dedicated test folder was created inside:
+
+`F:\CompanyData\Departments`
+
+The folder contained two test files.
+
+A new backup was completed while the test folder and both files existed in the File Server data.
+
+After the backup completed successfully, the test folder was deleted from the live data to simulate accidental data loss.
+
+The recovery scenario was:
+
+```text
+Create Test Folder
+        ↓
+Create Two Test Files
+        ↓
+Run Backup
+        ↓
+Delete Test Folder
+        ↓
+Open Windows Server Backup Recovery
+        ↓
+Select Backup Version
+        ↓
+Locate Deleted Test Folder
+        ↓
+Recover Test Data
+        ↓
+Verify Recovery Completed
+```
+
+This provided a controlled recovery test without deleting actual departmental production data.
+
+---
+
+## 8. File Recovery Configuration
+
+The Windows Server Backup **Recovery Wizard** was used to browse the available backup data.
+
+The test folder and its two files were visible inside the backup under the original File Server hierarchy.
+
+The recovery view confirmed that the test data had been captured successfully before deletion.
+
+The deleted test folder and its files were then selected for recovery.
+
+### Evidence
+
+![File Recovery Configuration](Screenshots/07-File-Recovery-Configuration.png)
+
+---
+
+## 9. File Recovery Verification
+
+The recovery operation was executed for the deleted test data.
+
+Windows Server Backup completed the recovery successfully and displayed:
+
+**Status: Completed**
+
+The recovery results showed that both test files were successfully processed during the recovery operation.
+
+This validated that the backup was not only successfully created but was also usable for file-level recovery.
+
+### Evidence
+
+![File Recovery Verification](Screenshots/08-File-Recovery-Verification.png)
+
+---
+
+## Shadow Copies vs Windows Server Backup
+
+The File Server now uses two different recovery mechanisms for different purposes.
+
+| Feature | Shadow Copies | Windows Server Backup |
+|---|---|---|
+| Primary Purpose | Previous-version recovery | Backup and data recovery |
+| Protected Data | Volume-based snapshots | Selected backup data |
+| Storage | `G:` | Dedicated 60 GB Virtual Disk |
+| Disk Separation from `F:` | Same underlying virtual disk | Separate virtual disk |
+| Previous Versions Integration | Yes | No |
+| Recovery Interface | Previous Versions | Windows Server Backup Recovery |
+| Tested in Lab | Yes | Yes |
+
+### Shadow Copies
+
+Shadow Copies provide fast access to previous versions of files and folders.
+
+They are useful for situations such as:
+
+- Accidental file modification
+- Accidental deletion
+- Returning to an earlier folder state
+
+However, in this lab, `F:` and `G:` reside on the same underlying virtual disk.
+
+A failure of that virtual disk could therefore affect both the production data and its Shadow Copies.
+
+### Windows Server Backup
+
+Windows Server Backup stores backup data on a separate virtual disk.
+
+This provides an additional recovery layer beyond Shadow Copies and allows data to be recovered through the Windows Server Backup recovery process.
+
+---
+
+## File Server Protection Design
+
+The final File Server protection architecture is:
+
+```text
+F:\CompanyData\Departments
+        │
+        ├── Shadow Copies
+        │       ↓
+        │      G:
+        │
+        └── Windows Server Backup
+                ↓
+        Dedicated 60 GB Virtual Disk
+```
+
+This creates two different recovery paths.
+
+### Fast Previous-Version Recovery
+
+**Shadow Copies / Previous Versions**
+
+Used when a previous version of a file or folder needs to be recovered quickly.
+
+### Backup Recovery
+
+**Windows Server Backup**
+
+Used when data needs to be restored from a stored backup copy.
+
+---
+
+## Validation Results
+
+| Validation | Result |
+|---|---|
+| Dedicated Backup Virtual Disk Created | ✅ Passed |
+| Windows Server Backup Installed | ✅ Passed |
+| File Server Backup Scope Configured | ✅ Passed |
+| Twice-Daily Backup Schedule Configured | ✅ Passed |
+| Dedicated Backup Destination Configured | ✅ Passed |
+| Successful Backup Operation | ✅ Passed |
+| Backup Completion Verification | ✅ Passed |
+| Test Data Captured in Backup | ✅ Passed |
+| Deleted Test Data Located in Recovery Wizard | ✅ Passed |
+| File Recovery Operation | ✅ Passed |
+| Recovery Status | ✅ Completed |
+
+---
+
+## Screenshots
+
+| # | Screenshot | Purpose |
+|---|---|---|
+| 01 | `01-WSB-Dedicated-Backup-Disk.png` | Dedicated backup disk verification |
+| 02 | `02-WSB-Feature-Installation-Verification.png` | Windows Server Backup feature installation verification |
+| 03 | `03-Backup-Scope-Configuration.png` | File Server backup scope configuration |
+| 04 | `04-Backup-Schedule-Configuration.png` | Twice-daily backup schedule configuration |
+| 05 | `05-Backup-Destination-Configuration.png` | Dedicated backup destination configuration |
+| 06 | `06-Backup-Completion-Verification.png` | Successful backup operation verification |
+| 07 | `07-File-Recovery-Configuration.png` | Backup data and deleted test folder selection |
+| 08 | `08-File-Recovery-Verification.png` | Successful recovery operation verification |
+
+---
+
+## Key Technical Lessons
+
+This implementation demonstrated several important backup and recovery concepts:
+
+- Backup storage should be separated from the production disk being protected.
+- Shadow Copies and Windows Server Backup serve different recovery purposes.
+- Shadow Copies should not be treated as a replacement for an independent backup.
+- Backup scope should be selected according to actual business requirements.
+- Backup frequency influences the amount of recent data that could potentially be lost between successful backup points.
+- A successful backup operation alone does not prove that data can actually be recovered.
+- Recovery testing is an essential part of validating a backup solution.
+- The SMB share path and the underlying local File Server path represent the same data from different access perspectives.
+- The retained completion evidence verifies a successful run but does not identify whether that run was manually or automatically triggered.
+- A separate virtual backup disk improves separation within the lab, but it is not equivalent to an off-host, offsite, or fully disaster-resistant backup architecture.
+
+---
+
+## Final Result
+
+Windows Server Backup was successfully implemented on `PC26` to protect:
+
+`F:\CompanyData\Departments`
+
+The final implementation includes:
+
+- A dedicated 60 GB backup virtual disk
+- Windows Server Backup installation
+- Selected File Server data protection
+- A twice-daily backup schedule configured for `12:00 AM` and `12:00 PM`
+- A dedicated backup destination
+- Successful backup validation
+- Practical simulated data-loss testing
+- File-level recovery through Windows Server Backup
+- Successful recovery completion
+
+The implementation confirms that the company File Server data can be successfully backed up and recovered using Windows Server Backup.
 
 **11 - Windows Server Backup — Completed ✅**
