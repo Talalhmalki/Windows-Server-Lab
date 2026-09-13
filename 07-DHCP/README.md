@@ -84,6 +84,51 @@ A reservation associated `PC-IT-01` with `192.168.1.50`. Following lease renewal
 - The exclusion test records a temporary pool change; it is not the final scope configuration.
 - The screenshots validate one client and one reservation, not capacity, failover, or production high availability.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Post-Install Authorization
+
+[![01 - Post-Install Authorization](Screenshots/01-DHCP-Post-Install-Authorization.png)](Screenshots/01-DHCP-Post-Install-Authorization.png)
+
+### 02 - Scope Configuration
+
+[![02 - Scope Configuration](Screenshots/02-DHCP-Scope-Configuration.png)](Screenshots/02-DHCP-Scope-Configuration.png)
+
+### 03 - Scope Options
+
+[![03 - Scope Options](Screenshots/03-DHCP-Scope-Options.png)](Screenshots/03-DHCP-Scope-Options.png)
+
+### 04 - Client Lease Verification
+
+[![04 - Client Lease Verification](Screenshots/04-DHCP-Client-Lease-Verification.png)](Screenshots/04-DHCP-Client-Lease-Verification.png)
+
+### 05 - Server Address Lease
+
+[![05 - Server Address Lease](Screenshots/05-DHCP-Server-Address-Lease.png)](Screenshots/05-DHCP-Server-Address-Lease.png)
+
+### 06 - Exclusion Test Configuration
+
+[![06 - Exclusion Test Configuration](Screenshots/06-DHCP-Exclusion-Range-Test.png)](Screenshots/06-DHCP-Exclusion-Range-Test.png)
+
+### 07 - Exclusion Behavior
+
+[![07 - Exclusion Behavior](Screenshots/07-DHCP-Exclusion-Verification.png)](Screenshots/07-DHCP-Exclusion-Verification.png)
+
+### 08 - Reservation Configuration
+
+[![08 - Reservation Configuration](Screenshots/08-DHCP-Reservation-Configuration.png)](Screenshots/08-DHCP-Reservation-Configuration.png)
+
+### 09 - Reservation Client Verification
+
+[![09 - Reservation Client Verification](Screenshots/09-DHCP-Reservation-Verification.png)](Screenshots/09-DHCP-Reservation-Verification.png)
+
+### 10 - Reservation Server Verification
+
+[![10 - Reservation Server Verification](Screenshots/10-DHCP-Reservation-Server-Lease.png)](Screenshots/10-DHCP-Reservation-Server-Lease.png)
+
 ## Outcome
 
 DHCP is authorized and operational. The final scope, DNS options, eight-day lease, exclusion behavior, client lease, and `PC-IT-01` reservation are all supported by paired server-side and client-side evidence.

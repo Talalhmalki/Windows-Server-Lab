@@ -119,6 +119,43 @@ The two mechanisms are complementary. Shadow Copies optimize routine version rec
 - The dedicated virtual disk is a stronger boundary than the Shadow Copy arrangement, but host or datastore failure could still affect both production and backup disks.
 - A production design should add off-host or offsite copies, retention requirements, encryption, monitoring, and documented recovery objectives.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Dedicated Backup Disk
+
+[![01 - Dedicated Backup Disk](Screenshots/01-WSB-Dedicated-Backup-Disk.png)](Screenshots/01-WSB-Dedicated-Backup-Disk.png)
+
+### 02 - Feature Installation
+
+[![02 - Feature Installation](Screenshots/02-WSB-Feature-Installation-Verification.png)](Screenshots/02-WSB-Feature-Installation-Verification.png)
+
+### 03 - Backup Scope
+
+[![03 - Backup Scope](Screenshots/03-Backup-Scope-Configuration.png)](Screenshots/03-Backup-Scope-Configuration.png)
+
+### 04 - Backup Schedule
+
+[![04 - Backup Schedule](Screenshots/04-Backup-Schedule-Configuration.png)](Screenshots/04-Backup-Schedule-Configuration.png)
+
+### 05 - Backup Destination
+
+[![05 - Backup Destination](Screenshots/05-Backup-Destination-Configuration.png)](Screenshots/05-Backup-Destination-Configuration.png)
+
+### 06 - Backup Completion
+
+[![06 - Backup Completion](Screenshots/06-Backup-Completion-Verification.png)](Screenshots/06-Backup-Completion-Verification.png)
+
+### 07 - Recovery Selection
+
+[![07 - Recovery Selection](Screenshots/07-File-Recovery-Configuration.png)](Screenshots/07-File-Recovery-Configuration.png)
+
+### 08 - Recovery Completion
+
+[![08 - Recovery Completion](Screenshots/08-File-Recovery-Verification.png)](Screenshots/08-File-Recovery-Verification.png)
+
 ## Outcome
 
 Windows Server Backup protects the departmental data on a dedicated 60 GB virtual disk, with daily runs scheduled at midnight and noon. The evidence confirms the configured scope and destination, a successful backup, recoverable test content, and a completed file-level recovery.

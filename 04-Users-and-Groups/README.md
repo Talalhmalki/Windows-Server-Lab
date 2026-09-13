@@ -46,6 +46,55 @@ The captured account-creation example has **Password never expires** selected. T
 | AD computer placement | [10 - Computer Moved to IT OU](Screenshots/10-Computer-Moved-To-IT-OU.png) | Computer object located under `VIREXON\Computers\IT`. |
 | Domain membership | [11 - Computer Domain Membership](Screenshots/11-Computer-Domain-Membership.png) | Client reports membership in `virexon.local`. |
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Screenshot 01
+
+[![01 - Screenshot 01](Screenshots/01-New-User-Wizard.png)](Screenshots/01-New-User-Wizard.png)
+
+### 02 - Screenshot 02
+
+[![02 - Screenshot 02](Screenshots/02-User-Password-Configuration.png)](Screenshots/02-User-Password-Configuration.png)
+
+### 03 - User Properties
+
+[![03 - User Properties](Screenshots/03-User-Properties-General.png)](Screenshots/03-User-Properties-General.png)
+
+### 04 - Screenshot 04
+
+[![04 - Screenshot 04](Screenshots/04-Users-Created-and-Organized.png)](Screenshots/04-Users-Created-and-Organized.png)
+
+### 05 - New Security Group Wizard
+
+[![05 - New Security Group Wizard](Screenshots/05-New-Security-Group-Wizard.png)](Screenshots/05-New-Security-Group-Wizard.png)
+
+### 06 - Security Groups Created
+
+[![06 - Security Groups Created](Screenshots/06-Security-Groups-Created.png)](Screenshots/06-Security-Groups-Created.png)
+
+### 07 - Before Membership
+
+[![07 - Before Membership](Screenshots/07-Group-Membership-Before-Adding-Users.png)](Screenshots/07-Group-Membership-Before-Adding-Users.png)
+
+### 08 - Membership Configured
+
+[![08 - Membership Configured](Screenshots/08-Group-Membership-Configured.png)](Screenshots/08-Group-Membership-Configured.png)
+
+### 09 - Computer Information
+
+[![09 - Computer Information](Screenshots/09-Computer-Information.png)](Screenshots/09-Computer-Information.png)
+
+### 10 - Computer Moved to IT OU
+
+[![10 - Computer Moved to IT OU](Screenshots/10-Computer-Moved-To-IT-OU.png)](Screenshots/10-Computer-Moved-To-IT-OU.png)
+
+### 11 - Computer Domain Membership
+
+[![11 - Computer Domain Membership](Screenshots/11-Computer-Domain-Membership.png)](Screenshots/11-Computer-Domain-Membership.png)
+
 ## Outcome
 
 The lab now has verified IT identities, reusable department Global groups, and a managed Windows client in the intended computer OU. This provides the identity and targeting foundation used by Group Policy in [Phase 05](../05-Group-Policy) and resource authorization in [Phase 08](../08-File-Server).

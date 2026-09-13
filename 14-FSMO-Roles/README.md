@@ -97,6 +97,35 @@ FSMO ownership does not automatically move when a Domain Controller is powered o
 - No permanent role distribution, role seizure, forced demotion, metadata cleanup, schema modification, or RID-recovery scenario was performed.
 - The exercise validates administrative control of role placement, not automatic FSMO failover.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Initial FSMO Ownership
+
+[![01 - Initial FSMO Ownership](Screenshots/01-Current-FSMO-Role-Ownership.png)](Screenshots/01-Current-FSMO-Role-Ownership.png)
+
+### 02 - Pre-Transfer Replication
+
+[![02 - Pre-Transfer Replication](Screenshots/02-Pre-Transfer-AD-Replication-Health.png)](Screenshots/02-Pre-Transfer-AD-Replication-Health.png)
+
+### 03 - Transfer Authorization
+
+[![03 - Transfer Authorization](Screenshots/03-FSMO-Transfer-Authorization-Verification.png)](Screenshots/03-FSMO-Transfer-Authorization-Verification.png)
+
+### 04 - Temporary FSMO Ownership
+
+[![04 - Temporary FSMO Ownership](Screenshots/04-Selected-FSMO-Role-Transfer.png)](Screenshots/04-Selected-FSMO-Role-Transfer.png)
+
+### 05 - Restored FSMO Ownership
+
+[![05 - Restored FSMO Ownership](Screenshots/05-Final-FSMO-Role-Ownership-Verification.png)](Screenshots/05-Final-FSMO-Role-Ownership-Verification.png)
+
+### 06 - Final Ownership and Replication
+
+[![06 - Final Ownership and Replication](Screenshots/06-Post-Transfer-AD-Replication-Health.png)](Screenshots/06-Post-Transfer-AD-Replication-Health.png)
+
 ## Outcome
 
 The five FSMO roles were identified, transferred to `PC27`, verified, and restored to `PC26`. The final documented state is unambiguous: `PC26.virexon.local` owns all five roles, and the final replication summary reports zero failures for both Domain Controllers.

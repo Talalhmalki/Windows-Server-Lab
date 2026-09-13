@@ -114,6 +114,47 @@ The final `repadmin /replsummary` capture shows both DCs with `0 / 5` source and
 - A production recovery plan also requires protected credentials, retention, monitoring, recovery objectives, and repeated restore testing.
 - An authoritative restore was intentionally not performed.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Pre-Recovery Replication Health
+
+[![01 - Pre-Recovery Replication Health](Screenshots/01-Pre-Recovery-AD-Replication-Health.png)](Screenshots/01-Pre-Recovery-AD-Replication-Health.png)
+
+### 02 - System State Backup Configuration
+
+[![02 - System State Backup Configuration](Screenshots/02-System-State-Backup-Configuration.png)](Screenshots/02-System-State-Backup-Configuration.png)
+
+### 03 - System State Backup Completion
+
+[![03 - System State Backup Completion](Screenshots/03-System-State-Backup-Completion.png)](Screenshots/03-System-State-Backup-Completion.png)
+
+### 04 - Backup Version Verification
+
+[![04 - Backup Version Verification](Screenshots/04-System-State-Backup-Version-Verification.png)](Screenshots/04-System-State-Backup-Version-Verification.png)
+
+### 05 - Post-Backup Directory Change
+
+[![05 - Post-Backup Directory Change](Screenshots/05-Post-Backup-Directory-Change-Verification.png)](Screenshots/05-Post-Backup-Directory-Change-Verification.png)
+
+### 06 - Non-Authoritative Recovery
+
+[![06 - Non-Authoritative Recovery](Screenshots/06-DSRM-Non-Authoritative-System-State-Recovery.png)](Screenshots/06-DSRM-Non-Authoritative-System-State-Recovery.png)
+
+### 07 - DC Services and Shares
+
+[![07 - DC Services and Shares](Screenshots/07-Post-Recovery-DC-Service-Verification.png)](Screenshots/07-Post-Recovery-DC-Service-Verification.png)
+
+### 08 - Post-Recovery Directory Data
+
+[![08 - Post-Recovery Directory Data](Screenshots/08-Post-Recovery-Directory-Replication-Verification.png)](Screenshots/08-Post-Recovery-Directory-Replication-Verification.png)
+
+### 09 - Final Replication Health
+
+[![09 - Final Replication Health](Screenshots/09-Final-AD-Replication-Health.png)](Screenshots/09-Final-AD-Replication-Health.png)
+
 ## Outcome
 
 `PC27` completed a System State backup and non-authoritative recovery. After restart, its core directory services and domain shares were available, the newer test OU was present, and the final replication summary reported zero failures between `PC26` and `PC27`.

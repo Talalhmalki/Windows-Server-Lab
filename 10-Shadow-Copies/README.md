@@ -87,6 +87,35 @@ The earlier folder version was then restored. Windows reported that the folder h
 - Client-accessible Previous Versions reduce routine restore effort, but access remains subject to the existing SMB and NTFS permissions.
 - Because `F:` and `G:` share one underlying virtual disk, Windows Server Backup in Phase 11 supplies the separate recovery layer.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Storage Configuration
+
+[![01 - Storage Configuration](Screenshots/01-Shadow-Copies-Storage-Configuration.png)](Screenshots/01-Shadow-Copies-Storage-Configuration.png)
+
+### 02 - Schedule Configuration
+
+[![02 - Schedule Configuration](Screenshots/02-Shadow-Copies-Schedule-Configuration.png)](Screenshots/02-Shadow-Copies-Schedule-Configuration.png)
+
+### 03 - Recovery-Point Verification
+
+[![03 - Recovery-Point Verification](Screenshots/03-Shadow-Copy-Creation-Verification.png)](Screenshots/03-Shadow-Copy-Creation-Verification.png)
+
+### 04 - Client Previous Versions
+
+[![04 - Client Previous Versions](Screenshots/04-Previous-Versions-Client-Verification.png)](Screenshots/04-Previous-Versions-Client-Verification.png)
+
+### 05 - Content Comparison
+
+[![05 - Content Comparison](Screenshots/05-Previous-Version-Content-Verification.png)](Screenshots/05-Previous-Version-Content-Verification.png)
+
+### 06 - Restore Verification
+
+[![06 - Restore Verification](Screenshots/06-Previous-Version-Restore-Verification.png)](Screenshots/06-Previous-Version-Restore-Verification.png)
+
 ## Outcome
 
 Shadow Copies are enabled for the departmental data volume, stored on `G:`, and scheduled twice per working day. The server-side recovery point, client-visible previous version, content difference, and successful restoration are all represented in the captured evidence.

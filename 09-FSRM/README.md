@@ -108,6 +108,55 @@ No automatic deletion, archiving, or file-management action was configured.
 | 10 | [Large Files Summary](Screenshots/10-Storage-Report-Large-Files-Summary.png) | One 65 MB file attributed to `VIREXON\S.ahmed`. |
 | 11 | [Large File Details](Screenshots/11-Storage-Report-Large-File-Details.png) | Exact filename, path, owner, size, and last-access value. |
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - FSRM Installation
+
+[![01 - FSRM Installation](Screenshots/01-FSRM-Role-Installation-Verification.png)](Screenshots/01-FSRM-Role-Installation-Verification.png)
+
+### 02 - Auto Apply Quota Configuration
+
+[![02 - Auto Apply Quota Configuration](Screenshots/02-FSRM-Auto-Apply-Quota-Configuration.png)](Screenshots/02-FSRM-Auto-Apply-Quota-Configuration.png)
+
+### 03 - Auto Apply Quota Verification
+
+[![03 - Auto Apply Quota Verification](Screenshots/03-FSRM-Auto-Apply-Quota-Verification.png)](Screenshots/03-FSRM-Auto-Apply-Quota-Verification.png)
+
+### 04 - Client Quota Enforcement
+
+[![04 - Client Quota Enforcement](Screenshots/04-Quota-Limit-Client-Verification.png)](Screenshots/04-Quota-Limit-Client-Verification.png)
+
+### 05 - Server Quota Usage
+
+[![05 - Server Quota Usage](Screenshots/05-Quota-Usage-Server-Verification.png)](Screenshots/05-Quota-Usage-Server-Verification.png)
+
+### 06 - File Screen Template
+
+[![06 - File Screen Template](Screenshots/06-File-Screen-Template-Configuration.png)](Screenshots/06-File-Screen-Template-Configuration.png)
+
+### 07 - Applied File Screen
+
+[![07 - Applied File Screen](Screenshots/07-File-Screen-Configuration.png)](Screenshots/07-File-Screen-Configuration.png)
+
+### 08 - Client File-Screen Test
+
+[![08 - Client File-Screen Test](Screenshots/08-File-Screening-Client-Verification.png)](Screenshots/08-File-Screening-Client-Verification.png)
+
+### 09 - Report Configuration
+
+[![09 - Report Configuration](Screenshots/09-Storage-Reports-Configuration.png)](Screenshots/09-Storage-Reports-Configuration.png)
+
+### 10 - Large Files Summary
+
+[![10 - Large Files Summary](Screenshots/10-Storage-Report-Large-Files-Summary.png)](Screenshots/10-Storage-Report-Large-Files-Summary.png)
+
+### 11 - Large File Details
+
+[![11 - Large File Details](Screenshots/11-Storage-Report-Large-File-Details.png)](Screenshots/11-Storage-Report-Large-File-Details.png)
+
 ## Outcome
 
 FSRM is operational as a governance layer over the departmental share. Each department has its own enforced 5 GB limit, image files are actively screened while normal text data remains writable, and storage reporting identifies large and inactive data using verified parameters. Claims about report scheduling are deliberately limited to what the screenshots display.

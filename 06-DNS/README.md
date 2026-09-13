@@ -122,6 +122,75 @@ No external DNS forwarder is documented as part of the final configuration. The 
 | 15 | [AD SRV Record Verification](Screenshots/15-AD-SRV-Records-Verification.png) | Service-location records used by Active Directory. |
 | 16 | [DNS Service Status](Screenshots/16-DNS-Service-Status.png) | The DNS Server service is running. |
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Reverse Lookup Zone Created
+
+[![01 - Reverse Lookup Zone Created](Screenshots/01-Reverse-Lookup-Zone-Created.png)](Screenshots/01-Reverse-Lookup-Zone-Created.png)
+
+### 02 - PTR Record for PC26
+
+[![02 - PTR Record for PC26](Screenshots/02-PTR-Record-PC26.png)](Screenshots/02-PTR-Record-PC26.png)
+
+### 03 - Reverse DNS Resolution
+
+[![03 - Reverse DNS Resolution](Screenshots/03-Reverse-DNS-Resolution.png)](Screenshots/03-Reverse-DNS-Resolution.png)
+
+### 04 - Forward DNS Resolution
+
+[![04 - Forward DNS Resolution](Screenshots/04-Forward-DNS-Resolution.png)](Screenshots/04-Forward-DNS-Resolution.png)
+
+### 05 - Client Forward Resolution
+
+[![05 - Client Forward Resolution](Screenshots/05-Client-Forward-DNS-Resolution.png)](Screenshots/05-Client-Forward-DNS-Resolution.png)
+
+### 06 - DNS Diagnostic Test
+
+[![06 - DNS Diagnostic Test](Screenshots/06-DNS-Diagnostic-Test-dcdiag.png)](Screenshots/06-DNS-Diagnostic-Test-dcdiag.png)
+
+### 07 - Aging Configuration
+
+[![07 - Aging Configuration](Screenshots/07-DNS-Aging-Scavenging-Configuration.png)](Screenshots/07-DNS-Aging-Scavenging-Configuration.png)
+
+### 08 - Server Scavenging
+
+[![08 - Server Scavenging](Screenshots/08-DNS-Server-Scavenging-Enabled.png)](Screenshots/08-DNS-Server-Scavenging-Enabled.png)
+
+### 09 - Secure Dynamic Updates
+
+[![09 - Secure Dynamic Updates](Screenshots/09-Secure-Dynamic-Updates.png)](Screenshots/09-Secure-Dynamic-Updates.png)
+
+### 10 - Client Registration Workflow
+
+[![10 - Client Registration Workflow](Screenshots/10-Dynamic-DNS-Client-Registration.png)](Screenshots/10-Dynamic-DNS-Client-Registration.png)
+
+### 11 - Server-Side Client Reverse Lookup
+
+[![11 - Server-Side Client Reverse Lookup](Screenshots/11-Server-Reverse-DNS-Resolution.png)](Screenshots/11-Server-Reverse-DNS-Resolution.png)
+
+### 12 - Client-Side Reverse Lookup
+
+[![12 - Client-Side Reverse Lookup](Screenshots/12-Client-Reverse-DNS-Resolution.png)](Screenshots/12-Client-Reverse-DNS-Resolution.png)
+
+### 13 - DNS Zone Inventory
+
+[![13 - DNS Zone Inventory](Screenshots/13-DNS-Zones-Configuration.png)](Screenshots/13-DNS-Zones-Configuration.png)
+
+### 14 - A Record Verification
+
+[![14 - A Record Verification](Screenshots/14-DNS-A-Records-Verification.png)](Screenshots/14-DNS-A-Records-Verification.png)
+
+### 15 - AD SRV Record Verification
+
+[![15 - AD SRV Record Verification](Screenshots/15-AD-SRV-Records-Verification.png)](Screenshots/15-AD-SRV-Records-Verification.png)
+
+### 16 - DNS Service Status
+
+[![16 - DNS Service Status](Screenshots/16-DNS-Service-Status.png)](Screenshots/16-DNS-Service-Status.png)
+
 ## Outcome
 
 Internal DNS is operational for the `virexon.local` lab. Forward and reverse queries, secure client registration, Active Directory service discovery, record-lifecycle controls, diagnostic health, and service status are all supported by the captured evidence. The design remains intentionally limited to a single DNS/domain controller on an isolated lab network.
