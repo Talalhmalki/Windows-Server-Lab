@@ -46,6 +46,27 @@ The custom hierarchy begins with the `VIREXON` root OU beneath the domain:
 
 The design follows Microsoft's principle of using OUs to organize objects for administration, delegation, and Group Policy application: [Reviewing OU design concepts](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/reviewing-ou-design-concepts).
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Root Organizational Unit
+
+[![01 - Root Organizational Unit](Screenshots/01-Root-Organizational-Unit.png)](Screenshots/01-Root-Organizational-Unit.png)
+
+### 02 - Top-Level Organizational Units
+
+[![02 - Top-Level Organizational Units](Screenshots/02-Top-Level-Organizational-Units.png)](Screenshots/02-Top-Level-Organizational-Units.png)
+
+### 03 - Users Department Structure
+
+[![03 - Users Department Structure](Screenshots/03-Users-Department-Structure.png)](Screenshots/03-Users-Department-Structure.png)
+
+### 04 - Computers Department Structure
+
+[![04 - Computers Department Structure](Screenshots/04-Computers-Department-Structure.png)](Screenshots/04-Computers-Department-Structure.png)
+
 ## Outcome
 
 The verified OU structure provides consistent placement targets for the identities and client computer created in [Phase 04](../04-Users-and-Groups) and the GPO links documented in [Phase 05](../05-Group-Policy).

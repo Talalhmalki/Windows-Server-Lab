@@ -125,6 +125,47 @@ The retained final `dcdiag /test:replications` capture on `PC26` shows both Conn
 - The client used temporary static addressing only because DHCP was unavailable with `PC26` offline.
 - A passing replication diagnostic is reported exactly as captured; no broader high-availability claim is made.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Site and Subnet Configuration
+
+[![01 - Site and Subnet Configuration](Screenshots/01-AD-Site-and-Subnet-Configuration.png)](Screenshots/01-AD-Site-and-Subnet-Configuration.png)
+
+### 02 - Additional Domain Controller
+
+[![02 - Additional Domain Controller](Screenshots/02-Additional-Domain-Controller-Deployment-Verification.png)](Screenshots/02-Additional-Domain-Controller-Deployment-Verification.png)
+
+### 03 - KCC Connection
+
+[![03 - KCC Connection](Screenshots/03-KCC-Replication-Connection-Verification.png)](Screenshots/03-KCC-Replication-Connection-Verification.png)
+
+### 04 - DNS, SYSVOL, and NETLOGON
+
+[![04 - DNS, SYSVOL, and NETLOGON](Screenshots/04-DNS-SYSVOL-NETLOGON-Replication-Verification.png)](Screenshots/04-DNS-SYSVOL-NETLOGON-Replication-Verification.png)
+
+### 05 - PC26 to PC27 Replication
+
+[![05 - PC26 to PC27 Replication](Screenshots/05-PC26-to-PC27-Directory-Replication-Verification.png)](Screenshots/05-PC26-to-PC27-Directory-Replication-Verification.png)
+
+### 06 - PC27 to PC26 Replication
+
+[![06 - PC27 to PC26 Replication](Screenshots/06-PC27-to-PC26-Directory-Replication-Verification.png)](Screenshots/06-PC27-to-PC26-Directory-Replication-Verification.png)
+
+### 07 - Client Site Detection
+
+[![07 - Client Site Detection](Screenshots/07-Client-Site-Detection-Verification.png)](Screenshots/07-Client-Site-Detection-Verification.png)
+
+### 08 - Authentication Failover
+
+[![08 - Authentication Failover](Screenshots/08-Secondary-DC-Authentication-Failover-Verification.png)](Screenshots/08-Secondary-DC-Authentication-Failover-Verification.png)
+
+### 09 - Final Replication Diagnostic
+
+[![09 - Final Replication Diagnostic](Screenshots/09-Final-AD-Replication-Health-Verification.png)](Screenshots/09-Final-AD-Replication-Health-Verification.png)
+
 ## Outcome
 
 `PC27` is operational as an additional writable Domain Controller, DNS server, and Global Catalog in `Riyadh-HQ`. The evidence confirms site mapping, replication operations in both directions, client site detection, authentication through `PC27` during a controlled outage, and a passing final replication diagnostic after troubleshooting.

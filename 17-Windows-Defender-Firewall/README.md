@@ -111,6 +111,47 @@ The post-change `repadmin /replsummary` capture again reports zero source and de
 
 Phase 18 later confirms the same boundary: `PC26` reports this firewall GPO as denied by Security Filtering.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Pre-Firewall Replication
+
+[![01 - Pre-Firewall Replication](Screenshots/01-Pre-Firewall-AD-Replication-Health.png)](Screenshots/01-Pre-Firewall-AD-Replication-Health.png)
+
+### 02 - PC27 Firewall Baseline
+
+[![02 - PC27 Firewall Baseline](Screenshots/02-Pre-Firewall-PC27-Profile-State.png)](Screenshots/02-Pre-Firewall-PC27-Profile-State.png)
+
+### 03 - Firewall GPO Pilot Scope
+
+[![03 - Firewall GPO Pilot Scope](Screenshots/03-DC-Firewall-GPO-Pilot-Scope.png)](Screenshots/03-DC-Firewall-GPO-Pilot-Scope.png)
+
+### 04 - Domain Profile Configuration
+
+[![04 - Domain Profile Configuration](Screenshots/04-DC-Firewall-Profile-Configuration.png)](Screenshots/04-DC-Firewall-Profile-Configuration.png)
+
+### 05 - Management ICMP Rule
+
+[![05 - Management ICMP Rule](Screenshots/05-DC-Firewall-Management-ICMP-Rule.png)](Screenshots/05-DC-Firewall-Management-ICMP-Rule.png)
+
+### 06 - PC27 Policy Result
+
+[![06 - PC27 Policy Result](Screenshots/06-PC27-Firewall-Policy-Result.png)](Screenshots/06-PC27-Firewall-Policy-Result.png)
+
+### 07 - PC27 Effective State
+
+[![07 - PC27 Effective State](Screenshots/07-PC27-Firewall-Effective-State.png)](Screenshots/07-PC27-Firewall-Effective-State.png)
+
+### 08 - Management ICMP Test
+
+[![08 - Management ICMP Test](Screenshots/08-PC27-Management-ICMP-Verification.png)](Screenshots/08-PC27-Management-ICMP-Verification.png)
+
+### 09 - Post-Firewall Replication
+
+[![09 - Post-Firewall Replication](Screenshots/09-PC27-Post-Firewall-AD-Replication-Health.png)](Screenshots/09-PC27-Post-Firewall-AD-Replication-Health.png)
+
 ## Outcome
 
 `PC27` now has a centrally managed Domain Profile pilot with inbound traffic blocked by default, outbound traffic allowed, local rule merging retained, and dropped-packet logging enabled. The scoped management workstation remained reachable, and Active Directory replication remained healthy. The configuration is complete for the documented pilot scope only.

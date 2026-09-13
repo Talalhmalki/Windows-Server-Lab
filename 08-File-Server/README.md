@@ -161,6 +161,123 @@ These corrections preserve the implementation history while making the final arc
 | 27 | [Drive Map Configuration](Screenshots/27-GPO-Drive-Map-Configuration.png) | `S:` preference settings and UNC path. |
 | 28 | [Drive Map Client Result](Screenshots/28-GPO-Drive-Map-Client-Verification.png) | Applied GPO and visible mapped drive. |
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - File Server Role
+
+[![01 - File Server Role](Screenshots/01-File-Server-Role-Verification.png)](Screenshots/01-File-Server-Role-Verification.png)
+
+### 02 - Data Volume
+
+[![02 - Data Volume](Screenshots/02-File-Server-Data-Volume.png)](Screenshots/02-File-Server-Data-Volume.png)
+
+### 03 - Department Folders
+
+[![03 - Department Folders](Screenshots/03-Department-Folder-Structure.png)](Screenshots/03-Department-Folder-Structure.png)
+
+### 04 - Initial AGDLP Nesting
+
+[![04 - Initial AGDLP Nesting](Screenshots/04-AGDLP-Group-Nesting.png)](Screenshots/04-AGDLP-Group-Nesting.png)
+
+### 05 - Initial HR NTFS ACL
+
+[![05 - Initial HR NTFS ACL](Screenshots/05-HR-NTFS-Permissions.png)](Screenshots/05-HR-NTFS-Permissions.png)
+
+### 06 - Departments SMB Share
+
+[![06 - Departments SMB Share](Screenshots/06-Departments-SMB-Share.png)](Screenshots/06-Departments-SMB-Share.png)
+
+### 07 - Unauthorized Access Denied
+
+[![07 - Unauthorized Access Denied](Screenshots/07-Unauthorized-Department-Access-Denied.png)](Screenshots/07-Unauthorized-Department-Access-Denied.png)
+
+### 08 - Historical IT Modify Test
+
+[![08 - Historical IT Modify Test](Screenshots/08-Authorized-IT-Modify-Access.png)](Screenshots/08-Authorized-IT-Modify-Access.png)
+
+### 09 - AD Group Architecture
+
+[![09 - AD Group Architecture](Screenshots/09-AD-Group-Architecture.png)](Screenshots/09-AD-Group-Architecture.png)
+
+### 10 - Access-Role Groups
+
+[![10 - Access-Role Groups](Screenshots/10-Access-Role-Groups.png)](Screenshots/10-Access-Role-Groups.png)
+
+### 11 - Resource-Permission Groups
+
+[![11 - Resource-Permission Groups](Screenshots/11-Resource-Permission-Groups.png)](Screenshots/11-Resource-Permission-Groups.png)
+
+### 12 - Department Global Groups
+
+[![12 - Department Global Groups](Screenshots/12-Department-Global-Groups.png)](Screenshots/12-Department-Global-Groups.png)
+
+### 13 - IT Editors Membership
+
+[![13 - IT Editors Membership](Screenshots/13-IT-Editors-Group-Membership.png)](Screenshots/13-IT-Editors-Group-Membership.png)
+
+### 14 - IT Readers Membership
+
+[![14 - IT Readers Membership](Screenshots/14-IT-Readers-Group-Membership.png)](Screenshots/14-IT-Readers-Group-Membership.png)
+
+### 15 - Final AGDLP Nesting
+
+[![15 - Final AGDLP Nesting](Screenshots/15-AGDLP-Group-Membership-Verification.png)](Screenshots/15-AGDLP-Group-Membership-Verification.png)
+
+### 16 - IT NTFS Permissions
+
+[![16 - IT NTFS Permissions](Screenshots/16-IT-NTFS-Permissions.png)](Screenshots/16-IT-NTFS-Permissions.png)
+
+### 17 - All Department ACLs
+
+[![17 - All Department ACLs](Screenshots/17-All-Departments-NTFS-Permissions-Verification.png)](Screenshots/17-All-Departments-NTFS-Permissions-Verification.png)
+
+### 18 - Reader Write Denied
+
+[![18 - Reader Write Denied](Screenshots/18-IT-Reader-Access-Denied-Verification.png)](Screenshots/18-IT-Reader-Access-Denied-Verification.png)
+
+### 19 - Editor Modify Test
+
+[![19 - Editor Modify Test](Screenshots/19-IT-Editor-Modify-Verification.png)](Screenshots/19-IT-Editor-Modify-Verification.png)
+
+### 20 - ABE Enabled
+
+[![20 - ABE Enabled](Screenshots/20-ABE-Enabled-on-Departments-Share.png)](Screenshots/20-ABE-Enabled-on-Departments-Share.png)
+
+### 21 - ABE Client Result
+
+[![21 - ABE Client Result](Screenshots/21-ABE-Client-Verification.png)](Screenshots/21-ABE-Client-Verification.png)
+
+### 22 - Share Permissions
+
+[![22 - Share Permissions](Screenshots/22-Departments-Share-Permissions.png)](Screenshots/22-Departments-Share-Permissions.png)
+
+### 23 - Reader Effective Access
+
+[![23 - Reader Effective Access](Screenshots/23-IT-Reader-Effective-Access.png)](Screenshots/23-IT-Reader-Effective-Access.png)
+
+### 24 - Editor Effective Access
+
+[![24 - Editor Effective Access](Screenshots/24-IT-Editor-Effective-Access.png)](Screenshots/24-IT-Editor-Effective-Access.png)
+
+### 25 - Active SMB Session
+
+[![25 - Active SMB Session](Screenshots/25-SMB-Active-Session-Verification.png)](Screenshots/25-SMB-Active-Session-Verification.png)
+
+### 26 - DNS-Name Share Access
+
+[![26 - DNS-Name Share Access](Screenshots/26-DNS-Name-Share-Access-Verification.png)](Screenshots/26-DNS-Name-Share-Access-Verification.png)
+
+### 27 - Drive Map Configuration
+
+[![27 - Drive Map Configuration](Screenshots/27-GPO-Drive-Map-Configuration.png)](Screenshots/27-GPO-Drive-Map-Configuration.png)
+
+### 28 - Drive Map Client Result
+
+[![28 - Drive Map Client Result](Screenshots/28-GPO-Drive-Map-Client-Verification.png)](Screenshots/28-GPO-Drive-Map-Client-Verification.png)
+
 ## Outcome
 
 The final implementation provides a centralized departmental share with role-based AGDLP authorization, explicit NTFS permissions, broad-but-controlled share permissions, ABE, client and effective-access validation, operational SMB evidence, DNS-based access, and centralized drive mapping. The historical over-permission state remains documented without being confused with the final design.

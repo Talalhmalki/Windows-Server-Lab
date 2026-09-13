@@ -39,6 +39,35 @@ Server Manager also shows AD DS, DHCP, DNS, File and Storage Services, and WDS i
 
 The missing default gateway is intentional for this host-only exercise. It isolates the lab from external networks; it would not be an appropriate default for a production server that requires routed connectivity, updates, or external DNS resolution.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Server Manager
+
+[![01 - Server Manager](Screenshots/01-Server-Manager.png)](Screenshots/01-Server-Manager.png)
+
+### 02 - System Properties
+
+[![02 - System Properties](Screenshots/02-System-Properties.png)](Screenshots/02-System-Properties.png)
+
+### 03 - ipconfig /all
+
+[![03 - ipconfig /all](Screenshots/03-IPConfig-All.png)](Screenshots/03-IPConfig-All.png)
+
+### 04 - IPv4 Configuration
+
+[![04 - IPv4 Configuration](Screenshots/04-IPv4-Configuration.png)](Screenshots/04-IPv4-Configuration.png)
+
+### 05 - Time Zone
+
+[![05 - Time Zone](Screenshots/05-Time-Zone.png)](Screenshots/05-Time-Zone.png)
+
+### 06 - Domain Login
+
+[![06 - Domain Login](Screenshots/06-Domain-Login.png)](Screenshots/06-Domain-Login.png)
+
 ## Outcome
 
 The captured baseline establishes a consistent server identity and static network configuration for the remaining phases. DNS service configuration and service-level validation are covered in [Phase 06](../06-DNS), rather than being claimed as complete here.

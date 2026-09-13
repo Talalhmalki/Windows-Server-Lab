@@ -145,6 +145,99 @@ Deletion protection and Recycle Bin address different risks: the first blocks an
 - Active Directory Recycle Bin does not replace System State backup or forest-recovery planning.
 - Test accounts and temporary privileged objects should be removed after validation.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Administrative Role Structure
+
+[![01 - Administrative Role Structure](Screenshots/01-Administrative-Role-Structure-Verification.png)](Screenshots/01-Administrative-Role-Structure-Verification.png)
+
+### 02 - RSAT AD DS Tools Installation
+
+[![02 - RSAT AD DS Tools Installation](Screenshots/02-RSAT-AD-DS-Tools-Installation-Verification.png)](Screenshots/02-RSAT-AD-DS-Tools-Installation-Verification.png)
+
+### 03 - RSAT Remote Administration
+
+[![03 - RSAT Remote Administration](Screenshots/03-RSAT-Remote-AD-Administration-Verification.png)](Screenshots/03-RSAT-Remote-AD-Administration-Verification.png)
+
+### 04 - Help Desk Delegation
+
+[![04 - Help Desk Delegation](Screenshots/04-HelpDesk-Role-and-Delegation-Configuration.png)](Screenshots/04-HelpDesk-Role-and-Delegation-Configuration.png)
+
+### 05 - Help Desk Allowed Action
+
+[![05 - Help Desk Allowed Action](Screenshots/05-HelpDesk-Allowed-Action-Verification.png)](Screenshots/05-HelpDesk-Allowed-Action-Verification.png)
+
+### 06 - Help Desk Boundary
+
+[![06 - Help Desk Boundary](Screenshots/06-HelpDesk-Administrative-Account-Access-Denied.png)](Screenshots/06-HelpDesk-Administrative-Account-Access-Denied.png)
+
+### 07 - AD Operator User Delegation
+
+[![07 - AD Operator User Delegation](Screenshots/07-AD-Operator-User-Delegation-Configuration.png)](Screenshots/07-AD-Operator-User-Delegation-Configuration.png)
+
+### 08 - AD Operator Group Delegation
+
+[![08 - AD Operator Group Delegation](Screenshots/08-AD-Operator-Group-Membership-Delegation.png)](Screenshots/08-AD-Operator-Group-Membership-Delegation.png)
+
+### 09 - AD Operator Allowed Action
+
+[![09 - AD Operator Allowed Action](Screenshots/09-AD-Operator-Allowed-Actions-Verification.png)](Screenshots/09-AD-Operator-Allowed-Actions-Verification.png)
+
+### 10 - AD Operator Escalation Boundary
+
+[![10 - AD Operator Escalation Boundary](Screenshots/10-AD-Operator-Privilege-Escalation-Denied.png)](Screenshots/10-AD-Operator-Privilege-Escalation-Denied.png)
+
+### 11 - Privileged Role Assignment
+
+[![11 - Privileged Role Assignment](Screenshots/11-Privileged-AD-Admin-Role-Assignment.png)](Screenshots/11-Privileged-AD-Admin-Role-Assignment.png)
+
+### 12 - Privileged Action
+
+[![12 - Privileged Action](Screenshots/12-AD-Admin-Privileged-Action-Verification.png)](Screenshots/12-AD-Admin-Privileged-Action-Verification.png)
+
+### 13 - Daily-Account Boundary
+
+[![13 - Daily-Account Boundary](Screenshots/13-Daily-Account-Administrative-Action-Denied.png)](Screenshots/13-Daily-Account-Administrative-Action-Denied.png)
+
+### 14 - Privileged PSO Configuration
+
+[![14 - Privileged PSO Configuration](Screenshots/14-Privileged-PSO-Configuration.png)](Screenshots/14-Privileged-PSO-Configuration.png)
+
+### 15 - Resultant PSO
+
+[![15 - Resultant PSO](Screenshots/15-Privileged-PSO-Resultant-Policy.png)](Screenshots/15-Privileged-PSO-Resultant-Policy.png)
+
+### 16 - PSO Enforcement
+
+[![16 - PSO Enforcement](Screenshots/16-Privileged-PSO-Enforcement-Verification.png)](Screenshots/16-Privileged-PSO-Enforcement-Verification.png)
+
+### 17 - Workstation Restriction
+
+[![17 - Workstation Restriction](Screenshots/17-Administrative-Workstation-Restriction-Configuration.png)](Screenshots/17-Administrative-Workstation-Restriction-Configuration.png)
+
+### 18 - Unauthorized Workstation Test
+
+[![18 - Unauthorized Workstation Test](Screenshots/18-Unauthorized-Workstation-Logon-Denied.png)](Screenshots/18-Unauthorized-Workstation-Logon-Denied.png)
+
+### 19 - OU Protection Configuration
+
+[![19 - OU Protection Configuration](Screenshots/19-Administrative-OU-Protection-Configuration.png)](Screenshots/19-Administrative-OU-Protection-Configuration.png)
+
+### 20 - OU Deletion Protection
+
+[![20 - OU Deletion Protection](Screenshots/20-Accidental-Deletion-Protection-Verification.png)](Screenshots/20-Accidental-Deletion-Protection-Verification.png)
+
+### 21 - Deleted Object
+
+[![21 - Deleted Object](Screenshots/21-AD-Recycle-Bin-Deleted-Object-Verification.png)](Screenshots/21-AD-Recycle-Bin-Deleted-Object-Verification.png)
+
+### 22 - Object Restoration
+
+[![22 - Object Restoration](Screenshots/22-AD-Recycle-Bin-Object-Restoration-Verification.png)](Screenshots/22-AD-Recycle-Bin-Object-Restoration-Verification.png)
+
 ## Outcome
 
 The lab now separates daily and administrative identities, assigns permissions through scoped role groups, enforces a targeted privileged password policy, restricts privileged sign-in, protects a critical OU, and restores deleted directory objects. Both permitted and denied actions confirm the intended authorization boundaries.

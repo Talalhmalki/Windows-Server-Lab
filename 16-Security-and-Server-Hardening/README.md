@@ -114,6 +114,75 @@ The client lease and successful name lookup demonstrate the captured client stat
 - Requiring SMB signing and refusing LM/NTLM should be compatibility-tested against legacy systems before production deployment.
 - This phase implements a selected hardening set, not the complete Microsoft security baseline or an external compliance benchmark.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Pre-Hardening Replication
+
+[![01 - Pre-Hardening Replication](Screenshots/01-Pre-Hardening-AD-Replication-Health.png)](Screenshots/01-Pre-Hardening-AD-Replication-Health.png)
+
+### 02 - Pilot GPO Scope
+
+[![02 - Pilot GPO Scope](Screenshots/02-DC-Hardening-GPO-Pilot-Scope.png)](Screenshots/02-DC-Hardening-GPO-Pilot-Scope.png)
+
+### 03 - Security Options
+
+[![03 - Security Options](Screenshots/03-DC-Hardening-Security-Options.png)](Screenshots/03-DC-Hardening-Security-Options.png)
+
+### 04 - Print Spooler Policy
+
+[![04 - Print Spooler Policy](Screenshots/04-DC-Hardening-Print-Spooler-Policy.png)](Screenshots/04-DC-Hardening-Print-Spooler-Policy.png)
+
+### 05 - PC27 Policy Result
+
+[![05 - PC27 Policy Result](Screenshots/05-PC27-Hardening-Policy-Result.png)](Screenshots/05-PC27-Hardening-Policy-Result.png)
+
+### 06 - PC27 Service and SMB1
+
+[![06 - PC27 Service and SMB1](Screenshots/06-PC27-Service-and-SMB1-Verification.png)](Screenshots/06-PC27-Service-and-SMB1-Verification.png)
+
+### 07 - PC27 Sign-In Protection
+
+[![07 - PC27 Sign-In Protection](Screenshots/07-PC27-Sign-In-Protection-Verification.png)](Screenshots/07-PC27-Sign-In-Protection-Verification.png)
+
+### 08 - PC27 Pilot Replication
+
+[![08 - PC27 Pilot Replication](Screenshots/08-PC27-Pilot-AD-Replication-Health.png)](Screenshots/08-PC27-Pilot-AD-Replication-Health.png)
+
+### 09 - Final GPO Scope
+
+[![09 - Final GPO Scope](Screenshots/09-DC-Hardening-GPO-Final-Scope.png)](Screenshots/09-DC-Hardening-GPO-Final-Scope.png)
+
+### 10 - PC26 Policy Result
+
+[![10 - PC26 Policy Result](Screenshots/10-PC26-Hardening-Policy-Result.png)](Screenshots/10-PC26-Hardening-Policy-Result.png)
+
+### 11 - PC26 Service and SMB1
+
+[![11 - PC26 Service and SMB1](Screenshots/11-PC26-Service-and-SMB1-Verification.png)](Screenshots/11-PC26-Service-and-SMB1-Verification.png)
+
+### 12 - PC26 Sign-In Protection
+
+[![12 - PC26 Sign-In Protection](Screenshots/12-PC26-Sign-In-Protection-Verification.png)](Screenshots/12-PC26-Sign-In-Protection-Verification.png)
+
+### 13 - Client DNS and DHCP State
+
+[![13 - Client DNS and DHCP State](Screenshots/13-Client-DNS-and-DHCP-Verification.png)](Screenshots/13-Client-DNS-and-DHCP-Verification.png)
+
+### 14 - Client File Access and GPO Scope
+
+[![14 - Client File Access and GPO Scope](Screenshots/14-Client-File-Access-and-GPO-Verification.png)](Screenshots/14-Client-File-Access-and-GPO-Verification.png)
+
+### 15 - RSAT Administration
+
+[![15 - RSAT Administration](Screenshots/15-RSAT-Remote-AD-Administration-Verification.png)](Screenshots/15-RSAT-Remote-AD-Administration-Verification.png)
+
+### 16 - Final Services and Replication
+
+[![16 - Final Services and Replication](Screenshots/16-Final-DC-Services-and-Replication-Health.png)](Screenshots/16-Final-DC-Services-and-Replication-Health.png)
+
 ## Outcome
 
 The selected hardening controls were deployed first to `PC27` and then to `PC26`. Both servers show the intended GPO, disabled Print Spooler, disabled SMB1 state, and protected sign-in display. Client administration and file access remained available, core DC services remained running, and final replication reported zero failures.

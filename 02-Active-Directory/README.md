@@ -40,6 +40,31 @@ The available screenshots capture role selection and the final ADUC state. They 
 
 `PC26` is the only domain controller because this is a consolidated learning environment. A production design would normally use multiple domain controllers, tested restore procedures, monitored replication, and role placement appropriate to the organization's availability and security requirements.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Add Roles and Features Wizard
+
+[![01 - Add Roles and Features Wizard](Screenshots/01-Add-Roles-and-Features-Wizard.png)](Screenshots/01-Add-Roles-and-Features-Wizard.png)
+
+### 02 - Installation Type
+
+[![02 - Installation Type](Screenshots/02-Installation-Type.png)](Screenshots/02-Installation-Type.png)
+
+### 03 - Server Selection
+
+[![03 - Server Selection](Screenshots/03-Server-Selection.png)](Screenshots/03-Server-Selection.png)
+
+### 04 - Server Roles
+
+[![04 - Server Roles](Screenshots/04-Server-Roles-ADDS.png)](Screenshots/04-Server-Roles-ADDS.png)
+
+### 05 - Active Directory Users and Computers
+
+[![05 - Active Directory Users and Computers](Screenshots/05-Active-Directory-Users-and-Computers.png)](Screenshots/05-Active-Directory-Users-and-Computers.png)
+
 ## Outcome
 
 The `virexon.local` directory is operational and ready for the OU structure, identities, computers, and policies implemented in the following phases.

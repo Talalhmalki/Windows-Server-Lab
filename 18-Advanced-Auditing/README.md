@@ -128,6 +128,67 @@ The final `repadmin /replsummary` reports `0 / 5` source and destination failure
 - No backup of `GPO - DC Advanced Auditing` is evidenced or claimed.
 - A passing final replication summary is not described as proof of end-to-end monitoring coverage.
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01 - Pre-Auditing Replication
+
+[![01 - Pre-Auditing Replication](Screenshots/01-Pre-Auditing-AD-Replication-Health.png)](Screenshots/01-Pre-Auditing-AD-Replication-Health.png)
+
+### 02 - PC27 Audit Baseline
+
+[![02 - PC27 Audit Baseline](Screenshots/02-Pre-Auditing-PC27-Audit-Policy-Baseline.png)](Screenshots/02-Pre-Auditing-PC27-Audit-Policy-Baseline.png)
+
+### 03 - Auditing GPO Pilot Scope
+
+[![03 - Auditing GPO Pilot Scope](Screenshots/03-DC-Auditing-GPO-Pilot-Scope.png)](Screenshots/03-DC-Auditing-GPO-Pilot-Scope.png)
+
+### 04 - Advanced Audit Policy
+
+[![04 - Advanced Audit Policy](Screenshots/04-DC-Advanced-Audit-Policy-Configuration.png)](Screenshots/04-DC-Advanced-Audit-Policy-Configuration.png)
+
+### 05 - Subcategory Override
+
+[![05 - Subcategory Override](Screenshots/05-DC-Audit-Subcategory-Override-Configuration.png)](Screenshots/05-DC-Audit-Subcategory-Override-Configuration.png)
+
+### 06 - PC27 Policy Result
+
+[![06 - PC27 Policy Result](Screenshots/06-PC27-Auditing-Policy-Result.png)](Screenshots/06-PC27-Auditing-Policy-Result.png)
+
+### 07 - PC27 Effective Policy
+
+[![07 - PC27 Effective Policy](Screenshots/07-PC27-Effective-Audit-Policy.png)](Screenshots/07-PC27-Effective-Audit-Policy.png)
+
+### 08 - User Creation Event
+
+[![08 - User Creation Event](Screenshots/08-PC27-User-Creation-Audit-Event.png)](Screenshots/08-PC27-User-Creation-Audit-Event.png)
+
+### 09 - User Deletion Event
+
+[![09 - User Deletion Event](Screenshots/09-PC27-User-Deletion-Audit-Event.png)](Screenshots/09-PC27-User-Deletion-Audit-Event.png)
+
+### 10 - PC27 Pilot Replication
+
+[![10 - PC27 Pilot Replication](Screenshots/10-PC27-Pilot-AD-Replication-Health.png)](Screenshots/10-PC27-Pilot-AD-Replication-Health.png)
+
+### 11 - Final Auditing Scope
+
+[![11 - Final Auditing Scope](Screenshots/11-DC-Auditing-GPO-Final-Scope.png)](Screenshots/11-DC-Auditing-GPO-Final-Scope.png)
+
+### 12 - PC26 Policy Result
+
+[![12 - PC26 Policy Result](Screenshots/12-PC26-Auditing-Policy-Result.png)](Screenshots/12-PC26-Auditing-Policy-Result.png)
+
+### 13 - PC26 Effective Policy
+
+[![13 - PC26 Effective Policy](Screenshots/13-PC26-Effective-Audit-Policy.png)](Screenshots/13-PC26-Effective-Audit-Policy.png)
+
+### 14 - Final Replication Health
+
+[![14 - Final Replication Health](Screenshots/14-Final-Auditing-AD-Replication-Health.png)](Screenshots/14-Final-Auditing-AD-Replication-Health.png)
+
 ## Outcome
 
 `GPO - DC Advanced Auditing` now applies to both Domain Controllers. Audit Logon and User Account Management are effective for Success and Failure on `PC26` and `PC27`; events `4720` and `4726` validate account creation and deletion on `PC27`; and the final replication summary reports zero failures.

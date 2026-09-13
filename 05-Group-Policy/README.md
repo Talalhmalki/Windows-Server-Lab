@@ -150,6 +150,195 @@ Neither screenshot displays the signed-in identity. They prove that both unrestr
 
 </details>
 
+
+## Screenshot evidence
+
+The screenshots below follow the documented evidence order. Each image links to its original file.
+
+### 01
+
+[![01](Screenshots/01-GPO-Corporate-Desktop-Wallpaper-Created.png)](Screenshots/01-GPO-Corporate-Desktop-Wallpaper-Created.png)
+
+### 02
+
+[![02](Screenshots/02-GPO-Corporate-Desktop-Wallpaper-Linked.png)](Screenshots/02-GPO-Corporate-Desktop-Wallpaper-Linked.png)
+
+### 03 - Configured
+
+[![03 - Configured](Screenshots/03-GPO-Corporate-Desktop-Wallpaper-Configured.png)](Screenshots/03-GPO-Corporate-Desktop-Wallpaper-Configured.png)
+
+### 04 - Applied
+
+[![04 - Applied](Screenshots/04-GPO-Corporate-Desktop-Wallpaper-Applied.png)](Screenshots/04-GPO-Corporate-Desktop-Wallpaper-Applied.png)
+
+### 05
+
+[![05](Screenshots/05-GPO-Prevent-Control-Panel-Created.png)](Screenshots/05-GPO-Prevent-Control-Panel-Created.png)
+
+### 06
+
+[![06](Screenshots/06-GPO-Prevent-Control-Panel-Linked.png)](Screenshots/06-GPO-Prevent-Control-Panel-Linked.png)
+
+### 07 - Configured
+
+[![07 - Configured](Screenshots/07-GPO-Prevent-Control-Panel-Configured.png)](Screenshots/07-GPO-Prevent-Control-Panel-Configured.png)
+
+### 08 - Applied
+
+[![08 - Applied](Screenshots/08-GPO-Prevent-Control-Panel-Applied.png)](Screenshots/08-GPO-Prevent-Control-Panel-Applied.png)
+
+### 09
+
+[![09](Screenshots/09-GPO-Disable-Command-Prompt-Created.png)](Screenshots/09-GPO-Disable-Command-Prompt-Created.png)
+
+### 10
+
+[![10](Screenshots/10-GPO-Disable-Command-Prompt-Linked.png)](Screenshots/10-GPO-Disable-Command-Prompt-Linked.png)
+
+### 11 - Configured
+
+[![11 - Configured](Screenshots/11-GPO-Disable-Command-Prompt-Configured.png)](Screenshots/11-GPO-Disable-Command-Prompt-Configured.png)
+
+### 12 - Applied
+
+[![12 - Applied](Screenshots/12-GPO-Disable-Command-Prompt-Applied.png)](Screenshots/12-GPO-Disable-Command-Prompt-Applied.png)
+
+### 13
+
+[![13](Screenshots/13-GPO-Disable-Registry-Editor-Created.png)](Screenshots/13-GPO-Disable-Registry-Editor-Created.png)
+
+### 14
+
+[![14](Screenshots/14-GPO-Disable-Registry-Editor-Linked.png)](Screenshots/14-GPO-Disable-Registry-Editor-Linked.png)
+
+### 15 - Configured
+
+[![15 - Configured](Screenshots/15-GPO-Disable-Registry-Editor-Configured.png)](Screenshots/15-GPO-Disable-Registry-Editor-Configured.png)
+
+### 16 - Applied
+
+[![16 - Applied](Screenshots/16-GPO-Disable-Registry-Editor-Applied.png)](Screenshots/16-GPO-Disable-Registry-Editor-Applied.png)
+
+### 17
+
+[![17](Screenshots/17-GPO-Remove-Run-Command-Created.png)](Screenshots/17-GPO-Remove-Run-Command-Created.png)
+
+### 18
+
+[![18](Screenshots/18-GPO-Remove-Run-Command-Linked.png)](Screenshots/18-GPO-Remove-Run-Command-Linked.png)
+
+### 19 - Configured
+
+[![19 - Configured](Screenshots/19-GPO-Remove-Run-Command-Configured.png)](Screenshots/19-GPO-Remove-Run-Command-Configured.png)
+
+### 20 - Applied
+
+[![20 - Applied](Screenshots/20-GPO-Remove-Run-Command-Applied.png)](Screenshots/20-GPO-Remove-Run-Command-Applied.png)
+
+### 21
+
+[![21](Screenshots/21-GPO-Disable-Task-Manager-Created.png)](Screenshots/21-GPO-Disable-Task-Manager-Created.png)
+
+### 22
+
+[![22](Screenshots/22-GPO-Disable-Task-Manager-Linked.png)](Screenshots/22-GPO-Disable-Task-Manager-Linked.png)
+
+### 23 - Configured
+
+[![23 - Configured](Screenshots/23-GPO-Disable-Task-Manager-Configured.png)](Screenshots/23-GPO-Disable-Task-Manager-Configured.png)
+
+### 24 - Applied
+
+[![24 - Applied](Screenshots/24-GPO-Disable-Task-Manager-Applied.png)](Screenshots/24-GPO-Disable-Task-Manager-Applied.png)
+
+### 25
+
+[![25](Screenshots/25-GPO-Disable-USB-Storage-Created.png)](Screenshots/25-GPO-Disable-USB-Storage-Created.png)
+
+### 26
+
+[![26](Screenshots/26-GPO-Disable-USB-Storage-Linked.png)](Screenshots/26-GPO-Disable-USB-Storage-Linked.png)
+
+### 27 - Configured
+
+[![27 - Configured](Screenshots/27-GPO-Disable-USB-Storage-Configured.png)](Screenshots/27-GPO-Disable-USB-Storage-Configured.png)
+
+### 28 - Access Denied
+
+[![28 - Access Denied](Screenshots/28-GPO-Disable-USB-Storage-Applied.png)](Screenshots/28-GPO-Disable-USB-Storage-Applied.png)
+
+### 29
+
+[![29](Screenshots/29-GPO-Password-Policy-Created.png)](Screenshots/29-GPO-Password-Policy-Created.png)
+
+### 30
+
+[![30](Screenshots/30-GPO-Password-Policy-Linked.png)](Screenshots/30-GPO-Password-Policy-Linked.png)
+
+### 31 - Configured
+
+[![31 - Configured](Screenshots/31-GPO-Password-Policy-Configured.png)](Screenshots/31-GPO-Password-Policy-Configured.png)
+
+### 32 - Screenshot 32
+
+[![32 - Screenshot 32](Screenshots/32-GPO-Password-Policy-Applied.png)](Screenshots/32-GPO-Password-Policy-Applied.png)
+
+### 33
+
+[![33](Screenshots/33-GPO-Account-Lockout-Policy-Created.png)](Screenshots/33-GPO-Account-Lockout-Policy-Created.png)
+
+### 34
+
+[![34](Screenshots/34-GPO-Account-Lockout-Policy-Linked.png)](Screenshots/34-GPO-Account-Lockout-Policy-Linked.png)
+
+### 35 - Configured
+
+[![35 - Configured](Screenshots/35-GPO-Account-Lockout-Policy-Configured.png)](Screenshots/35-GPO-Account-Lockout-Policy-Configured.png)
+
+### 36 - Screenshot 36
+
+[![36 - Screenshot 36](Screenshots/36-GPO-Account-Lockout-Policy-Applied.png)](Screenshots/36-GPO-Account-Lockout-Policy-Applied.png)
+
+### 37
+
+[![37](Screenshots/37-GPO-Interactive-Logon-Message-Created.png)](Screenshots/37-GPO-Interactive-Logon-Message-Created.png)
+
+### 38
+
+[![38](Screenshots/38-GPO-Interactive-Logon-Message-Linked.png)](Screenshots/38-GPO-Interactive-Logon-Message-Linked.png)
+
+### 39 - Configured
+
+[![39 - Configured](Screenshots/39-GPO-Interactive-Logon-Message-Configured.png)](Screenshots/39-GPO-Interactive-Logon-Message-Configured.png)
+
+### 40 - Displayed
+
+[![40 - Displayed](Screenshots/40-GPO-Interactive-Logon-Message-Applied.png)](Screenshots/40-GPO-Interactive-Logon-Message-Applied.png)
+
+### 41 - Domain Root Links
+
+[![41 - Domain Root Links](Screenshots/41-GPO-Final-Domain-Root-Linking.png)](Screenshots/41-GPO-Final-Domain-Root-Linking.png)
+
+### 42 - VIREXON OU Architecture
+
+[![42 - VIREXON OU Architecture](Screenshots/42-GPO-Final-Corporate-OU-Architecture.png)](Screenshots/42-GPO-Final-Corporate-OU-Architecture.png)
+
+### 43 - User GPO Scope
+
+[![43 - User GPO Scope](Screenshots/43-GPO-Final-Users-GPO-Scope.png)](Screenshots/43-GPO-Final-Users-GPO-Scope.png)
+
+### 44 - Computer GPO Scope
+
+[![44 - Computer GPO Scope](Screenshots/44-GPO-Final-Computers-GPO-Scope.png)](Screenshots/44-GPO-Final-Computers-GPO-Scope.png)
+
+### 45 - Screenshot 45
+
+[![45 - Screenshot 45](Screenshots/45-GPO-Validation-HR-Restrictions-Applied.png)](Screenshots/45-GPO-Validation-HR-Restrictions-Applied.png)
+
+### 46 - Screenshot 46
+
+[![46 - Screenshot 46](Screenshots/46-GPO-Validation-IT-Restrictions-Excluded.png)](Screenshots/46-GPO-Validation-IT-Restrictions-Excluded.png)
+
 ## Outcome
 
 The final design contains ten documented GPOs with explicit domain, user, and computer scopes. Configuration evidence exists for every policy, and client-side behavior is captured for each control. The remaining validation limitation is narrowly defined: the final restricted and unrestricted sessions need identity-bearing evidence before they can be attributed to HR and IT with confidence.
