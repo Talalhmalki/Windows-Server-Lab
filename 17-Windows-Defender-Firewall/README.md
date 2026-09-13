@@ -1,563 +1,488 @@
-# Phase 18 — Advanced Auditing
+# 17 — Windows Defender Firewall
 
 ## Overview
 
-This phase implements a controlled Windows Server auditing configuration for the VIREXON Active Directory environment.
+This phase implemented centralized Windows Defender Firewall management for the VIREXON Domain Controller environment through Group Policy.
 
-The objective was not to build a complete SOC, SIEM, or enterprise-wide security monitoring platform. Instead, the phase focused on practical auditing capabilities that a Windows System Administrator should understand:
+A dedicated firewall GPO was created and deployed using a controlled pilot approach. The policy was linked to the Domain Controllers OU but initially scoped only to **PC27**, allowing the firewall configuration to be validated without immediately affecting both Domain Controllers.
 
-- Centrally configuring selected Advanced Audit Policy subcategories through Group Policy.
-- Verifying the effective audit policy on the target Domain Controllers.
-- Generating controlled Active Directory account-management activity.
-- Validating the resulting Security events in Event Viewer.
-- Using a pilot-first deployment model before expanding the configuration.
-- Confirming that Active Directory replication remained healthy after deployment.
+The implementation focused on enforcing the required Domain Profile configuration, preserving existing Windows firewall rules, enabling dropped-packet logging, and creating a restricted management ICMP rule for the designated IT workstation.
 
-The implementation followed the validation flow:
-
-**Group Policy → Advanced Audit Policy → Effective Audit Policy → Security Event → Event Viewer Verification**
+The phase was intentionally completed as a **pilot implementation on PC27**. Full deployment to PC26 and advanced blocked-port validation were deferred for future firewall study and testing.
 
 ---
 
 ## Environment
 
-| Component | Configuration |
+| Component | Details |
 |---|---|
 | Domain | `virexon.local` |
-| NetBIOS Name | `VIREXON` |
 | Active Directory Site | `Riyadh-HQ` |
 | Network | `192.168.1.0/24` |
 | Primary Domain Controller | `PC26.virexon.local` |
 | PC26 IP Address | `192.168.1.2` |
 | Additional Domain Controller | `PC27.virexon.local` |
 | PC27 IP Address | `192.168.1.3` |
-| Administrative Workstation | `PC-IT-01` |
+| Management Workstation | `PC-IT-01` |
 | PC-IT-01 Reserved IP | `192.168.1.50` |
-| Virtualization Platform | VMware Workstation Pro |
+| Firewall Management | Group Policy |
+| Pilot Target | `PC27` |
 
 ---
 
 ## Business Requirement
 
-VIREXON required important security-related activity on its Domain Controllers to be recorded consistently and managed centrally.
+VIREXON required centralized Windows Defender Firewall management for its Domain Controllers.
 
-The required auditing visibility included:
+The implementation needed to:
 
-- Successful and failed logon activity.
-- User account management activity.
-- Active Directory user-account creation.
-- Active Directory user-account deletion.
-
-The implementation also needed to avoid unnecessary high-volume audit categories and preserve Domain Controller and Active Directory replication health.
+- Keep Windows Defender Firewall enabled.
+- Centrally enforce the Domain firewall profile.
+- Block unsolicited inbound traffic by default.
+- Allow outbound traffic by default.
+- Preserve legitimate existing Windows and server-role firewall rules.
+- Provide a controlled management exception for ICMP testing.
+- Enable dropped-packet logging.
+- Use a pilot deployment before broader firewall rollout.
+- Maintain Active Directory replication after the firewall policy was applied.
 
 ---
 
-## Technical Design
+## Technical Objectives
 
-A dedicated Group Policy Object was created:
+The following objectives were implemented:
 
-`GPO - DC Advanced Auditing`
+- Create a dedicated firewall GPO.
+- Link the GPO to the Domain Controllers OU.
+- Restrict the initial deployment to PC27.
+- Configure the Domain Profile.
+- Keep Windows Defender Firewall enabled.
+- Configure default inbound traffic as blocked.
+- Configure default outbound traffic as allowed.
+- Preserve local firewall rule merging.
+- Enable logging for dropped packets.
+- Disable logging for successful connections.
+- Create a restricted ICMPv4 management rule.
+- Allow ICMP Echo Requests from `PC-IT-01`.
+- Apply and verify the GPO on PC27.
+- Validate management connectivity.
+- Confirm Active Directory replication remained healthy.
+
+---
+
+## Pre-Change Validation
+
+Before changing the firewall configuration, Active Directory replication was checked using:
+
+```cmd
+repadmin /replsummary
+```
+
+Both Domain Controllers reported:
+
+- `0 / 5` replication failures as Source DSAs.
+- `0 / 5` replication failures as Destination DSAs.
+- `0%` replication error rate.
+
+This provided a healthy replication baseline before the firewall policy was introduced.
+
+![Pre-Firewall AD Replication Health](Screenshots/01-Pre-Firewall-AD-Replication-Health.png)
+
+---
+
+## PC27 Firewall Baseline
+
+The local Windows Defender Firewall console on PC27 was reviewed before the new GPO was configured.
+
+The active firewall profile was:
+
+**Domain Profile**
+
+The existing state already showed:
+
+- Windows Defender Firewall: **On**
+- Unmatched inbound connections: **Blocked**
+- Unmatched outbound connections: **Allowed**
+
+Because this behavior already existed before the new GPO, the purpose of the Phase 17 policy was to **centrally enforce and standardize** the required configuration rather than claim that these settings were enabled for the first time.
+
+![PC27 Firewall Baseline](Screenshots/02-Pre-Firewall-PC27-Profile-State.png)
+
+---
+
+## Dedicated Firewall GPO
+
+A new Group Policy Object was created:
+
+```text
+GPO - DC Windows Defender Firewall
+```
 
 The GPO was linked to:
 
-`virexon.local/Domain Controllers`
+```text
+virexon.local
+└── Domain Controllers
+```
 
-The deployment used a controlled pilot approach.
+A controlled pilot deployment was used.
 
-### Pilot Scope
+Initial Security Filtering contained only:
 
-Initial Security Filtering:
+```text
+PC27$
+```
 
-- `PC27$`
+PC26 was intentionally excluded from the pilot policy.
 
-PC27 was used as the pilot Domain Controller.
+This prevented the firewall configuration from being introduced to both Domain Controllers simultaneously.
 
-PC26 remained outside the auditing GPO until the PC27 validation was completed successfully.
-
-### Final Scope
-
-After successful PC27 validation, the Security Filtering was expanded to:
-
-- `PC26$`
-- `PC27$`
-
-The following existing policies were not modified during this phase:
-
-- Default Domain Policy
-- Default Domain Controllers Policy
-- `GPO - DC Disable Print Spooler`
-- `GPO - DC Windows Defender Firewall`
+![Firewall GPO Pilot Scope](Screenshots/03-DC-Firewall-GPO-Pilot-Scope.png)
 
 ---
 
-## Advanced Audit Policy Configuration
+## Domain Profile Configuration
 
-Only two Advanced Audit Policy subcategories were configured.
+The following Windows Defender Firewall Domain Profile configuration was defined through Group Policy:
 
-### Logon / Logoff
-
-**Audit Logon**
-
-Configured as:
-
-- Success: Enabled
-- Failure: Enabled
-
-Purpose:
-
-To centrally enforce auditing for successful and failed logon activity handled by the server.
-
-Typical related Security events include:
-
-- Event ID `4624` — successful logon
-- Event ID `4625` — failed logon
-
-The effective Audit Logon policy was verified on both Domain Controllers.
-
-However, this phase did **not** deliberately perform a dedicated functional test for both Event ID 4624 and Event ID 4625.
-
-Therefore, the documentation does not claim that both successful and failed logon events were functionally tested.
-
----
-
-### Account Management
-
-**Audit User Account Management**
-
-Configured as:
-
-- Success: Enabled
-- Failure: Enabled
-
-Purpose:
-
-To record important user-account management activity such as:
-
-- User creation
-- User deletion
-- Account changes
-- Password-related management actions
-- Account enable/disable activity
-
-For this phase, user creation and deletion were functionally tested.
-
----
-
-## Advanced Audit Policy Override
-
-The following Security Option was enabled:
-
-**Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings**
-
-Value:
-
-`Enabled`
-
-This ensures that the Advanced Audit Policy subcategory configuration is used instead of being unintentionally overridden by legacy/basic audit-category settings.
-
----
-
-## Pre-Deployment Baseline
-
-Before the dedicated auditing GPO was applied to PC27, the effective audit policy was reviewed using `auditpol`.
-
-The baseline showed:
-
-| Subcategory | Baseline State |
+| Setting | Configuration |
 |---|---|
-| Audit Logon | Success and Failure |
-| Audit User Account Management | Success |
+| Firewall State | On |
+| Inbound Connections | Block |
+| Outbound Connections | Allow |
+| Apply Local Firewall Rules | Yes |
+| Log Dropped Packets | Yes |
+| Log Successful Connections | No |
 
-This means that some auditing already existed before Phase 18.
+Private and Public firewall profiles were not configured by this GPO.
 
-The baseline was documented only as the pre-existing effective state.
+The existing Windows and server-role firewall rules were preserved by allowing local firewall rule merging.
 
-Phase 18 does **not** claim that every auditing setting was created from an unconfigured state.
+This was important because the Domain Controllers already depended on legitimate Windows firewall rules associated with services such as Active Directory Domain Services, DNS, SMB, RPC, DFSR, and other Windows infrastructure components.
 
-The dedicated GPO was used to centrally enforce the required design and ensure that User Account Management auditing included both Success and Failure.
+No attempt was made to manually recreate the complete Active Directory firewall rule set.
 
----
-
-## PC27 Pilot Deployment
-
-The auditing GPO was initially restricted to:
-
-`PC27$`
-
-After Group Policy refresh, `gpresult` confirmed that:
-
-`GPO - DC Advanced Auditing`
-
-appeared under:
-
-`Applied Group Policy Objects`
-
-on PC27.
-
-The effective audit configuration was then verified with `auditpol`.
-
-PC27 showed:
-
-- `Logon = Success and Failure`
-- `User Account Management = Success and Failure`
-
-This confirmed that the intended Advanced Audit Policy configuration was effective on the pilot Domain Controller.
+![Domain Profile Configuration](Screenshots/04-DC-Firewall-Profile-Configuration.png)
 
 ---
 
-## Controlled User Account Audit Test
+## Management ICMP Rule
 
-A temporary non-privileged Active Directory account was used for functional validation.
+One dedicated inbound management rule was created:
 
-### Temporary Account
+```text
+VIREXON - Allow ICMPv4 Echo from PC-IT-01
+```
 
-Display Name:
+The rule was configured with the following scope:
 
-`Audit Test User`
+| Setting | Value |
+|---|---|
+| Direction | Inbound |
+| Action | Allow the connection |
+| Protocol | ICMPv4 |
+| ICMP Type | Echo Request |
+| Local Address | Any |
+| Remote Address | `192.168.1.50` |
+| Profile | Domain |
+| Enabled | Yes |
 
-Logon Name:
+The purpose of the rule was to allow controlled ICMP reachability testing from the designated management workstation rather than enabling unrestricted ping access from any source.
 
-`audit.test`
+The configured source address corresponds to:
 
-The account was created only for auditing validation.
+```text
+PC-IT-01
+192.168.1.50
+```
 
-It was not granted administrative privileges and was not added to privileged groups.
-
-The account operation was performed through Active Directory Users and Computers while targeting PC27 as the Domain Controller handling the change.
-
----
-
-## User Creation Audit Validation
-
-After creating the temporary user, the Security log on PC27 was reviewed.
-
-The following event was successfully located and verified:
-
-**Event ID 4720 — A user account was created**
-
-The event confirmed:
-
-- Computer: `PC27.virexon.local`
-- Target Account: `audit.test`
-- Security ID: `VIREXON\audit.test`
-- Display Name: `Audit Test User`
-- Task Category: User Account Management
-- Audit Result: Success
-
-This provided functional evidence that the User Account Management audit configuration was recording account-creation activity.
+![Management ICMP Rule](Screenshots/05-DC-Firewall-Management-ICMP-Rule.png)
 
 ---
 
-## User Deletion Audit Validation
+## Pilot Policy Application
 
-The temporary account was then deleted.
+The policy was refreshed on PC27 using:
 
-The Security log on PC27 was reviewed again.
+```cmd
+gpupdate /force
+```
 
-The following event was successfully located and verified:
+The update completed successfully.
 
-**Event ID 4726 — A user account was deleted**
+The effective computer policies were then reviewed using:
 
-The event confirmed:
+```cmd
+gpresult /r /scope computer
+```
 
-- Computer: `PC27.virexon.local`
-- Target Account: `audit.test`
-- Security ID: `VIREXON\audit.test`
-- Task Category: User Account Management
-- Audit Result: Success
+The following GPO appeared under **Applied Group Policy Objects**:
 
-The temporary test account was therefore removed after completing the controlled validation.
+```text
+GPO - DC Windows Defender Firewall
+```
 
-No temporary administrative or privileged account was created during this phase.
+This confirmed that the pilot firewall policy had been successfully applied to PC27.
 
----
-
-## PC27 Pilot Replication Validation
-
-Active Directory replication was checked before the auditing changes and again after the PC27 pilot.
-
-The initial replication baseline showed:
-
-- PC26 Source: 0 failures
-- PC27 Source: 0 failures
-- PC26 Destination: 0 failures
-- PC27 Destination: 0 failures
-- Failure percentage: 0%
-
-During the post-pilot validation, a temporary replication issue was observed.
-
-`repadmin /replsummary` reported:
-
-`1722 — The RPC server is unavailable`
-
-The failure affected replication from PC26 toward PC27 for part of the replication topology.
-
-Additional inspection with `repadmin /showrepl` showed that some naming contexts were successfully replicating while the Configuration and Schema naming contexts had recorded RPC failures.
-
-The issue was treated as a technical validation blocker and no further auditing deployment was performed until replication health returned to normal.
-
-A later replication validation returned:
-
-- PC26 Source: 0 failures
-- PC27 Source: 0 failures
-- PC26 Destination: 0 failures
-- PC27 Destination: 0 failures
-- Failure percentage: 0%
-
-No root cause for the temporary RPC replication failure was proven.
-
-Therefore, this phase does **not** claim that the auditing configuration caused the replication issue.
-
-The condition was observed, validated, and confirmed healthy before continuing the deployment.
+![PC27 Firewall Policy Result](Screenshots/06-PC27-Firewall-Policy-Result.png)
 
 ---
 
-## Final Deployment to PC26
+## Effective Firewall State
 
-After the PC27 pilot was successfully validated and replication returned to a healthy state, PC26 was added to the GPO Security Filtering.
+The effective Windows Defender Firewall configuration was reviewed locally on PC27 after Group Policy application.
 
-Final Security Filtering:
+The Domain Profile was active and showed:
 
-- `PC26$`
-- `PC27$`
+- Windows Defender Firewall enabled.
+- Unmatched inbound traffic blocked.
+- Unmatched outbound traffic allowed.
+- Firewall configuration controlled through Group Policy.
+- Dropped packet logging enabled.
+- Successful connection logging disabled.
+- Standard Windows firewall log location retained.
 
-After the policy refresh on PC26, `gpresult` confirmed that:
+The effective local configuration therefore matched the intended pilot policy.
 
-`GPO - DC Advanced Auditing`
-
-was listed under:
-
-`Applied Group Policy Objects`
-
-The effective audit policy was then verified with `auditpol`.
-
-PC26 showed:
-
-- `Logon = Success and Failure`
-- `User Account Management = Success and Failure`
-
-This confirmed that the final auditing configuration was effective on both Domain Controllers.
+![PC27 Effective Firewall State](Screenshots/07-PC27-Firewall-Effective-State.png)
 
 ---
 
-## Firewall Policy Separation
+## Management Connectivity Validation
 
-During validation on PC26, `gpresult` also showed:
+Management connectivity was tested from:
 
-`GPO - DC Windows Defender Firewall`
+```text
+PC-IT-01
+```
 
-under the policies that were not applied because of Security Filtering.
+The workstation was using:
 
-This is expected.
+```text
+IPv4 Address: 192.168.1.50
+Subnet Mask: 255.255.255.0
+```
 
-Phase 17 intentionally retained the Windows Defender Firewall GPO as a PC27-only pilot deployment.
+ICMP connectivity was then tested to:
 
-The Firewall GPO was not expanded or modified during Phase 18.
+```text
+PC27
+192.168.1.3
+```
+
+The test completed successfully:
+
+```text
+Packets: Sent = 4, Received = 4, Lost = 0
+0% packet loss
+```
+
+This confirmed that ICMP connectivity from the designated management workstation remained operational after the firewall GPO was applied.
+
+Because local Windows firewall rule merging remained enabled, this validation confirms successful management connectivity from the approved workstation but does not claim that the custom rule was necessarily the only rule capable of permitting ICMP traffic.
+
+![PC27 Management ICMP Verification](Screenshots/08-PC27-Management-ICMP-Verification.png)
 
 ---
 
-## Final Active Directory Health Validation
+## Post-Change Active Directory Validation
 
-After the auditing configuration was deployed to both Domain Controllers, a final Active Directory replication validation was performed using:
+After the firewall policy was applied to PC27, Active Directory replication was checked again using:
 
-`repadmin /replsummary`
+```cmd
+repadmin /replsummary
+```
 
 The final result showed:
 
 ### Source DSA
 
-- PC26: `0 / 5` failures
-- PC27: `0 / 5` failures
+| Domain Controller | Failures | Error Rate |
+|---|---:|---:|
+| PC26 | 0 / 5 | 0% |
+| PC27 | 0 / 5 | 0% |
 
 ### Destination DSA
 
-- PC26: `0 / 5` failures
-- PC27: `0 / 5` failures
+| Domain Controller | Failures | Error Rate |
+|---|---:|---:|
+| PC26 | 0 / 5 | 0% |
+| PC27 | 0 / 5 | 0% |
 
-Final failure percentage:
+No replication failures were present after the firewall pilot deployment.
 
-`0%`
+This confirmed that the PC27 firewall configuration did not disrupt Active Directory replication.
 
-No replication errors were present in the final validation.
-
-This confirmed that both Domain Controllers remained healthy after the Phase 18 deployment.
-
----
-
-## GPO Backup Status
-
-A backup of:
-
-`GPO - DC Advanced Auditing`
-
-was included in the original deployment plan before expanding the policy to PC26.
-
-The backup was intentionally **not performed**.
-
-Therefore, this README does not claim that a GPO backup exists.
-
-The dedicated GPO design still provides configuration isolation from previous project phases, and Security Filtering can be used to remove an individual Domain Controller from the auditing deployment if rollback is required.
+![Post-Firewall AD Replication Health](Screenshots/09-PC27-Post-Firewall-AD-Replication-Health.png)
 
 ---
 
-## What Was Functionally Tested
+## Validation Summary
 
-The following items were functionally validated:
-
-| Test | Result |
+| Validation | Result |
 |---|---|
-| Auditing GPO applied to PC27 | Passed |
-| Effective Audit Logon policy on PC27 | Passed |
-| Effective User Account Management policy on PC27 | Passed |
-| Event ID 4720 generated for `audit.test` | Passed |
-| Event ID 4726 generated for `audit.test` | Passed |
-| Temporary user deleted | Passed |
-| PC27 pilot replication health | Passed after temporary RPC failure cleared |
-| Auditing GPO applied to PC26 | Passed |
-| Effective Audit Logon policy on PC26 | Passed |
-| Effective User Account Management policy on PC26 | Passed |
-| Final AD replication health | Passed |
-| Final replication failure percentage | 0% |
+| Pre-change AD replication healthy | Passed |
+| Domain Profile identified on PC27 | Passed |
+| Dedicated firewall GPO created | Passed |
+| Pilot scope limited to PC27 | Passed |
+| Firewall state centrally configured | Passed |
+| Default inbound traffic configured as Block | Passed |
+| Default outbound traffic configured as Allow | Passed |
+| Local firewall rule merging preserved | Passed |
+| Dropped-packet logging configured | Passed |
+| Successful connection logging disabled | Passed |
+| Restricted ICMPv4 management rule created | Passed |
+| GPO successfully applied to PC27 | Passed |
+| Effective firewall state verified | Passed |
+| PC-IT-01 management connectivity verified | Passed |
+| Post-change AD replication healthy | Passed |
 
 ---
 
-## Configured but Not Functionally Tested
+## Scope Decision
 
-The following policy was configured and verified as effective:
+The original design considered a broader two-Domain-Controller firewall rollout and additional negative traffic testing.
 
-`Audit Logon = Success and Failure`
+During implementation, the phase was intentionally concluded as a **controlled firewall pilot on PC27**.
 
-However, this phase did not intentionally generate dedicated test scenarios for both:
+The following items were therefore not implemented in this phase:
 
-- Event ID 4624
-- Event ID 4625
+- Firewall GPO deployment to PC26.
+- Full two-Domain-Controller firewall rollout.
+- Controlled unused TCP port DROP validation.
+- Advanced firewall log analysis using generated blocked TCP traffic.
+- Final DHCP, DNS, SMB, SYSVOL, and RSAT validation after a two-DC deployment.
+- IPsec or Connection Security Rules.
+- Advanced firewall troubleshooting.
 
-Therefore:
+These items are not claimed as completed.
 
-**Audit Logon was configured and verified as effective, but successful and failed logon events were not both deliberately functionally tested as part of this phase.**
+The pilot configuration remains isolated to PC27 through Security Filtering.
 
 ---
 
-## Out of Scope
+## Design Considerations
 
-The following auditing and security technologies were intentionally excluded from Phase 18:
+The implementation deliberately avoided aggressive firewall restrictions.
 
-- File and folder Object Access Auditing
-- NTFS SACL configuration
-- File Server access auditing
-- Audit Process Creation
-- Command-line process auditing
-- PowerShell Script Block Logging
-- PowerShell Transcription
-- Registry auditing
-- Directory Service Changes / Event ID 5136
-- Deep Kerberos auditing
-- Windows Event Forwarding
-- SIEM integration
-- Microsoft Sentinel
-- Microsoft Defender for Identity
-- Sysmon
-- Centralized audit-log forwarding
-- Full Microsoft enterprise auditing baseline
-- Account lockout testing
-- Repeated incorrect-password testing
+The following actions were not performed:
 
-These items were excluded intentionally to keep Phase 18 focused on practical Windows Server administration rather than SOC or SIEM engineering.
+- Windows Defender Firewall was not disabled.
+- The Windows Defender Firewall service was not stopped.
+- Default outbound traffic was not changed to Block.
+- `Block all connections` was not configured.
+- Existing Windows server-role rules were not disabled.
+- Active Directory service ports were not manually recreated.
+- Dynamic RPC restrictions were not introduced.
+- IPsec was not configured.
+- Connection Security Rules were not configured.
+
+This approach reduced the risk of disrupting the existing Active Directory infrastructure while still demonstrating centralized Windows Defender Firewall administration through Group Policy.
+
+---
+
+## Rollback Strategy
+
+Because the firewall configuration uses an independent GPO:
+
+```text
+GPO - DC Windows Defender Firewall
+```
+
+rollback can be performed without modifying the Default Domain Policy or Default Domain Controllers Policy.
+
+If the PC27 pilot causes an infrastructure problem, the intended rollback process is:
+
+1. Remove PC27 from the Phase 17 GPO Security Filtering or temporarily disable the GPO link.
+2. Refresh Group Policy on PC27.
+3. Verify the affected service.
+4. Verify the Domain firewall profile.
+5. Verify Active Directory replication.
+6. Identify the specific firewall configuration responsible before introducing any new exception.
+
+Stopping the Windows Defender Firewall service is not considered an appropriate rollback method.
 
 ---
 
 ## Evidence
 
-The implementation was documented using the following 14 screenshots.
+The following screenshots document this phase:
 
-| # | Screenshot | Evidence |
-|---|---|---|
-| 01 | `01-Pre-Auditing-AD-Replication-Health.png` | Proves AD replication was healthy before Phase 18 changes. |
-| 02 | `02-Pre-Auditing-PC27-Audit-Policy-Baseline.png` | Documents the effective PC27 auditing baseline before the dedicated GPO was applied. |
-| 03 | `03-DC-Auditing-GPO-Pilot-Scope.png` | Shows the dedicated auditing GPO linked to the Domain Controllers OU with PC27-only Security Filtering. |
-| 04 | `04-DC-Advanced-Audit-Policy-Configuration.png` | Shows Audit Logon and Audit User Account Management configured for Success and Failure. |
-| 05 | `05-DC-Audit-Subcategory-Override-Configuration.png` | Shows the Advanced Audit Policy subcategory override Security Option enabled. |
-| 06 | `06-PC27-Auditing-Policy-Result.png` | Confirms the auditing GPO was applied to PC27. |
-| 07 | `07-PC27-Effective-Audit-Policy.png` | Confirms the effective Advanced Audit Policy on PC27. |
-| 08 | `08-PC27-User-Creation-Audit-Event.png` | Shows Event ID 4720 for creation of `audit.test`. |
-| 09 | `09-PC27-User-Deletion-Audit-Event.png` | Shows Event ID 4726 for deletion of `audit.test`. |
-| 10 | `10-PC27-Pilot-AD-Replication-Health.png` | Confirms replication returned to 0 failures after the PC27 pilot. |
-| 11 | `11-DC-Auditing-GPO-Final-Scope.png` | Shows final Security Filtering containing both PC26 and PC27. |
-| 12 | `12-PC26-Auditing-Policy-Result.png` | Confirms the auditing GPO was applied to PC26. |
-| 13 | `13-PC26-Effective-Audit-Policy.png` | Confirms the effective Advanced Audit Policy on PC26. |
-| 14 | `14-Final-Auditing-AD-Replication-Health.png` | Final proof that replication remained healthy with 0 failures after full deployment. |
+1. `01-Pre-Firewall-AD-Replication-Health.png`
+   - Healthy Active Directory replication before firewall changes.
 
----
+2. `02-Pre-Firewall-PC27-Profile-State.png`
+   - Baseline Windows Defender Firewall state on PC27.
 
-## Final Configuration
+3. `03-DC-Firewall-GPO-Pilot-Scope.png`
+   - Dedicated firewall GPO linked to the Domain Controllers OU and scoped only to PC27.
 
-Final GPO:
+4. `04-DC-Firewall-Profile-Configuration.png`
+   - Domain Profile configuration, rule merging, and logging settings.
 
-`GPO - DC Advanced Auditing`
+5. `05-DC-Firewall-Management-ICMP-Rule.png`
+   - Dedicated ICMPv4 management rule for PC-IT-01.
 
-Linked to:
+6. `06-PC27-Firewall-Policy-Result.png`
+   - Group Policy result confirming the firewall GPO was applied to PC27.
 
-`virexon.local/Domain Controllers`
+7. `07-PC27-Firewall-Effective-State.png`
+   - Effective PC27 Domain Profile and firewall logging configuration.
 
-Final Security Filtering:
+8. `08-PC27-Management-ICMP-Verification.png`
+   - Successful ICMP management connectivity from PC-IT-01 to PC27.
 
-- `PC26$`
-- `PC27$`
-
-Final configured Advanced Audit Policy:
-
-- Audit Logon: Success and Failure
-- Audit User Account Management: Success and Failure
-
-Security Option:
-
-- Force audit policy subcategory settings to override audit policy category settings: Enabled
-
-Functionally verified Security events:
-
-- Event ID `4720` — User account created
-- Event ID `4726` — User account deleted
-
-Temporary test account:
-
-`audit.test`
-
-Status:
-
-Deleted after validation.
-
-Final Active Directory replication status:
-
-`0 failures`
+9. `09-PC27-Post-Firewall-AD-Replication-Health.png`
+   - Healthy Active Directory replication after the firewall pilot.
 
 ---
 
-## Result
+## Outcome
 
-Phase 18 successfully demonstrated the complete Windows Server auditing workflow:
+Phase 17 successfully introduced centralized Windows Defender Firewall management into the VIREXON lab using a controlled pilot deployment.
 
-**Dedicated GPO → Advanced Audit Policy → Effective Policy → Controlled AD Activity → Security Event → Event Viewer Verification**
+The dedicated Group Policy:
 
-The auditing configuration was first validated on PC27 and then expanded to PC26 only after the pilot succeeded.
+```text
+GPO - DC Windows Defender Firewall
+```
 
-Selected Advanced Audit Policy subcategories were centrally configured and verified as effective on both Domain Controllers.
+was successfully applied to PC27.
 
-Controlled Active Directory user-account creation and deletion activity was successfully captured through Security Event IDs 4720 and 4726.
+The Domain Profile was centrally standardized with:
 
-The temporary audit account was removed after testing.
+- Firewall enabled.
+- Default inbound traffic blocked.
+- Default outbound traffic allowed.
+- Existing local firewall rules preserved.
+- Dropped-packet logging enabled.
+- Successful connection logging disabled.
 
-The phase intentionally avoided unnecessary SOC/SIEM-level auditing features and remained focused on practical Windows Server System Administration.
+A restricted ICMPv4 management rule was created for the designated management workstation at `192.168.1.50`.
 
-Final Active Directory replication validation completed successfully with:
+Management connectivity from PC-IT-01 to PC27 remained operational, and Active Directory replication remained healthy with **0 failures** after the firewall policy was applied.
 
-**0 replication failures.**
+The phase was intentionally closed as a **successful controlled pilot implementation** rather than a full production-style rollout to both Domain Controllers.
 
 ---
 
-## Phase Status
+## Conclusion
 
-**Phase 18 — Auditing: COMPLETED**
+The VIREXON environment now includes a documented Windows Defender Firewall pilot managed through Group Policy.
 
-Next Phase:
+This phase demonstrated:
 
-**19 — PowerShell Administration**
+- Centralized firewall administration.
+- Domain Profile management.
+- Safe pilot deployment.
+- Security Filtering.
+- Default inbound and outbound firewall behavior.
+- Local firewall rule preservation.
+- Firewall logging configuration.
+- Scoped inbound rule creation.
+- Management connectivity validation.
+- Post-change Active Directory health validation.
+
+The configuration was introduced without disrupting Active Directory replication, and the broader firewall rollout was intentionally deferred until further firewall knowledge and testing are completed.
+
+**Phase 17 — Windows Defender Firewall: Completed as Controlled Pilot Deployment.**
